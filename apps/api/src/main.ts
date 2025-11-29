@@ -5,10 +5,18 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 async function bootstrap() {
+  const logger = new Logger('Bootstrap');
+
+  // Log environment check
+  logger.log('Starting application...');
+  logger.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+  logger.log(`PORT: ${process.env.PORT || 4000}`);
+  logger.log(`DATABASE_URL exists: ${!!process.env.DATABASE_URL}`);
+  logger.log(`REDIS_URL exists: ${!!process.env.REDIS_URL}`);
+
   const app = await NestFactory.create(AppModule, {
     rawBody: true, // Required for webhook signature verification
   });
-  const logger = new Logger('Bootstrap');
 
   // Global prefix
   app.setGlobalPrefix('api');
