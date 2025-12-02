@@ -61,6 +61,13 @@ export default function Header() {
               >
                 {t.header.dashboard}
               </Link>
+              <Link
+                href="/chat"
+                className="text-sm font-medium transition-colors hover:text-[var(--matcha-600)]"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                {t.header.chat || 'Chat'}
+              </Link>
             </SignedIn>
           </nav>
 
@@ -166,6 +173,14 @@ export default function Header() {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t.header.dashboard}
+                </Link>
+                <Link
+                  href="/chat"
+                  className="text-sm font-medium py-2"
+                  style={{ color: 'var(--text-secondary)' }}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t.header.chat || 'Chat'}
                 </Link>
               </SignedIn>
 

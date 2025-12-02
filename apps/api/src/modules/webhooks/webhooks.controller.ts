@@ -7,6 +7,7 @@ import {
   Logger,
   RawBodyRequest,
 } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import { Request } from 'express';
 import { Webhook } from 'svix';
 import { ConfigService } from '@nestjs/config';
@@ -25,6 +26,7 @@ interface ClerkWebhookEvent {
 }
 
 @Controller('webhooks')
+@SkipThrottle() // Webhooks should not be rate limited
 export class WebhooksController {
   private readonly logger = new Logger(WebhooksController.name);
 

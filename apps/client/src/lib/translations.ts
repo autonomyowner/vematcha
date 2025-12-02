@@ -7,6 +7,7 @@ export const translations = {
       home: 'Home',
       pricing: 'Pricing',
       dashboard: 'Dashboard',
+      chat: 'Chat',
       hello: 'Hello',
       logout: 'Logout',
       login: 'Login',
@@ -312,6 +313,17 @@ export const translations = {
       backHome: 'Back to home',
     },
 
+    // Chat
+    chat: {
+      title: 'Chat with Matcha AI',
+      newChat: 'New Chat',
+      noConversations: 'No conversations yet',
+      welcomeTitle: 'Start a conversation',
+      welcomeSubtitle: "Ask me anything and I'll help you out",
+      inputPlaceholder: 'Type your message...',
+      disclaimer: 'AI responses may not always be accurate. Please verify important information.',
+    },
+
     // Common
     common: {
       home: 'Home',
@@ -327,6 +339,7 @@ export const translations = {
       home: 'Accueil',
       pricing: 'Tarifs',
       dashboard: 'Tableau de bord',
+      chat: 'Chat',
       hello: 'Bonjour',
       logout: 'Deconnexion',
       login: 'Connexion',
@@ -630,6 +643,17 @@ export const translations = {
       title: 'Page introuvable',
       description: "Desole, la page que vous cherchez n'existe pas ou a ete deplacee.",
       backHome: "Retour a l'accueil",
+    },
+
+    // Chat
+    chat: {
+      title: 'Discutez avec Matcha AI',
+      newChat: 'Nouvelle discussion',
+      noConversations: 'Aucune conversation',
+      welcomeTitle: 'Commencez une conversation',
+      welcomeSubtitle: 'Posez-moi une question et je vous aiderai',
+      inputPlaceholder: 'Ecrivez votre message...',
+      disclaimer: 'Les reponses de l\'IA peuvent ne pas toujours etre exactes. Veuillez verifier les informations importantes.',
     },
 
     // Common

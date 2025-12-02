@@ -29,5 +29,10 @@ export default () => {
       secretAccessKey: env.R2_SECRET_ACCESS_KEY,
       bucketName: env.R2_BUCKET_NAME,
     },
+
+    openrouter: {
+      apiKey: env.OPENROUTER_API_KEY,
+      model: env.OPENROUTER_MODEL,
+    },
   };
 };

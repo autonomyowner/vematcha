@@ -102,6 +102,34 @@ export interface Plan {
   popular?: boolean;
 }
 
+// Chat Types
+export interface Message {
+  id: string;
+  conversationId: string;
+  role: 'USER' | 'ASSISTANT' | 'SYSTEM';
+  content: string;
+  createdAt: string;
+}
+
+export interface Conversation {
+  id: string;
+  userId: string;
+  title: string | null;
+  createdAt: string;
+  updatedAt: string;
+  messages?: Message[];
+}
+
+export interface SendMessageResponse {
+  conversationId: string;
+  message: Message;
+  usage: {
+    promptTokens: number;
+    completionTokens: number;
+    totalTokens: number;
+  };
+}
+
 // API Functions
 export const api = {
   // User
@@ -139,4 +167,41 @@ export const api = {
   // Plans
   getPlans: () =>
     apiClient<{ plans: Plan[]; currency: string; vatRate: number }>('/plans'),
+
+  // Chat
+  getConversations: (token: string, page = 1, limit = 20) =>
+    apiClient<{
+      conversations: Array<Conversation & { messages: Message[] }>;
+      pagination: { page: number; limit: number; total: number; totalPages: number };
+    }>(`/chat/conversations?page=${page}&limit=${limit}`, { token }),
+
+  getConversation: (token: string, id: string) =>
+    apiClient<Conversation & { messages: Message[] }>(`/chat/conversations/${id}`, { token }),
+
+  createConversation: (token: string, title?: string) =>
+    apiClient<Conversation>('/chat/conversations', {
+      method: 'POST',
+      body: JSON.stringify({ title }),
+      token,
+    }),
+
+  deleteConversation: (token: string, id: string) =>
+    apiClient<{ success: boolean }>(`/chat/conversations/${id}`, {
+      method: 'DELETE',
+      token,
+    }),
+
+  updateConversation: (token: string, id: string, title: string) =>
+    apiClient<Conversation>(`/chat/conversations/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ title }),
+      token,
+    }),
+
+  sendMessage: (token: string, message: string, conversationId?: string) =>
+    apiClient<SendMessageResponse>('/chat/send', {
+      method: 'POST',
+      body: JSON.stringify({ message, conversationId }),
+      token,
+    }),
 };

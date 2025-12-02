@@ -25,6 +25,10 @@ export const envSchema = z.object({
   R2_ACCESS_KEY_ID: z.string().optional(),
   R2_SECRET_ACCESS_KEY: z.string().optional(),
   R2_BUCKET_NAME: z.string().optional(),
+
+  // OpenRouter AI
+  OPENROUTER_API_KEY: z.string().optional(),
+  OPENROUTER_MODEL: z.string().default('openai/gpt-4o-mini'),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;
