@@ -27,9 +27,30 @@ async function bootstrap() {
   // Global interceptors
   app.useGlobalInterceptors(new LoggingInterceptor());
 
-  // CORS
+  // CORS - support multiple origins
+  const allowedOrigins = [
+    'http://localhost:3000',
+    process.env.FRONTEND_URL?.replace(/\/$/, ''), // Remove trailing slash if present
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
+  ].filter(Boolean) as string[];
+
+  logger.log(`Allowed CORS origins: ${allowedOrigins.join(', ')}`);
+
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, etc.)
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+      // Check if origin is in allowed list
+      if (allowedOrigins.some(allowed => origin === allowed || origin.endsWith('.vercel.app'))) {
+        callback(null, true);
+      } else {
+        logger.warn(`CORS blocked origin: ${origin}`);
+        callback(null, false);
+      }
+    },
     credentials: true,
   });
 
