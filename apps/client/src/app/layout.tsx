@@ -18,23 +18,60 @@ const dmSerif = DM_Serif_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Matcha - Understand Your Mind",
+  title: {
+    default: "Matcha - AI-Powered Psychological Insights",
+    template: "%s | Matcha",
+  },
   description:
-    "The AI that decodes your thought patterns, identifies your cognitive biases, and helps you understand the root of your challenges.",
+    "Discover your cognitive biases, understand your emotional patterns, and unlock personal growth with Matcha's AI-powered psychological analysis. Get real-time insights during conversations.",
   keywords: [
-    "psychology",
-    "AI",
-    "cognitive biases",
+    "psychology AI",
+    "cognitive bias detection",
+    "emotional intelligence",
     "personal development",
     "psychological analysis",
+    "mental wellness",
+    "self-awareness",
+    "AI therapy assistant",
+    "thought pattern analysis",
+    "mindfulness AI",
   ],
   authors: [{ name: "Matcha" }],
+  creator: "Matcha",
+  publisher: "Matcha",
+  metadataBase: new URL("https://vematcha.xyz"),
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: "Matcha - Understand Your Mind",
+    title: "Matcha - AI-Powered Psychological Insights",
     description:
-      "The AI that decodes your thought patterns and helps you overcome your blockers.",
+      "Understand your mind with AI. Detect cognitive biases, track emotional patterns, and get personalized insights for personal growth.",
     type: "website",
     locale: "en_US",
+    url: "https://vematcha.xyz",
+    siteName: "Matcha",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Matcha - AI-Powered Psychological Insights",
+    description:
+      "Understand your mind with AI. Detect cognitive biases and get personalized insights.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
 };
 
