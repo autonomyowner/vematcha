@@ -5,7 +5,7 @@ import { useAuth } from '@clerk/nextjs';
 import { api } from '../../../lib/api';
 
 interface UseTTSReturn {
-  speak: (text: string) => void;
+  speak: (text: string, onStart?: () => void) => void;
   speakSequence: (texts: string[]) => void;
   stop: () => void;
   isSpeaking: boolean;
@@ -22,7 +22,7 @@ export function useTTS(): UseTTSReturn {
   const audioCache = useRef<Map<string, string>>(new Map());
   const isMountedRef = useRef(true);
   const isPlayingRef = useRef(false);
-  const queueRef = useRef<string[]>([]);
+  const queueRef = useRef<Array<{ text: string; onStart?: () => void }>>([]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -39,9 +39,10 @@ export function useTTS(): UseTTSReturn {
   }, []);
 
   // Fallback to browser TTS
-  const speakWithBrowser = useCallback((text: string): Promise<void> => {
+  const speakWithBrowser = useCallback((text: string, onStart?: () => void): Promise<void> => {
     return new Promise((resolve) => {
       if (!window.speechSynthesis) {
+        onStart?.();
         resolve();
         return;
       }
@@ -51,6 +52,11 @@ export function useTTS(): UseTTSReturn {
       utterance.pitch = 1.0;
       utterance.volume = 1.0;
 
+      utterance.onstart = () => {
+        // Call onStart when audio actually begins
+        onStart?.();
+      };
+
       utterance.onend = () => resolve();
       utterance.onerror = () => resolve();
 
@@ -59,7 +65,7 @@ export function useTTS(): UseTTSReturn {
     });
   }, []);
 
-  const fetchAudio = useCallback(async (text: string): Promise<string | null> => {
+  const fetchAudio = useCallback(async (text: string, onStart?: () => void): Promise<string | null> => {
     // Check cache first
     const cached = audioCache.current.get(text);
     if (cached) return cached;
@@ -68,7 +74,7 @@ export function useTTS(): UseTTSReturn {
       const token = await getToken();
       if (!token) {
         // Fallback to browser TTS if no token
-        await speakWithBrowser(text);
+        await speakWithBrowser(text, onStart);
         return null;
       }
 
@@ -80,7 +86,7 @@ export function useTTS(): UseTTSReturn {
     } catch (error) {
       console.error('TTS fetch error, falling back to browser TTS:', error);
       // Fallback to browser TTS on error
-      await speakWithBrowser(text);
+      await speakWithBrowser(text, onStart);
       return null;
     }
   }, [getToken, speakWithBrowser]);
@@ -90,13 +96,13 @@ export function useTTS(): UseTTSReturn {
       return;
     }
 
-    const text = queueRef.current.shift()!;
+    const item = queueRef.current.shift()!;
     isPlayingRef.current = true;
     setIsSpeaking(true);
 
     try {
       setIsLoading(true);
-      const url = await fetchAudio(text);
+      const url = await fetchAudio(item.text, item.onStart);
       setIsLoading(false);
 
       if (!url || !isMountedRef.current) {
@@ -108,6 +114,11 @@ export function useTTS(): UseTTSReturn {
 
       const audio = new Audio(url);
       audioRef.current = audio;
+
+      // For cached audio, call onStart immediately when playing starts
+      audio.onplay = () => {
+        item.onStart?.();
+      };
 
       audio.onended = () => {
         if (isMountedRef.current) {
@@ -134,15 +145,15 @@ export function useTTS(): UseTTSReturn {
     }
   }, [fetchAudio]);
 
-  const speak = useCallback((text: string) => {
-    queueRef.current.push(text);
+  const speak = useCallback((text: string, onStart?: () => void) => {
+    queueRef.current.push({ text, onStart });
     if (!isPlayingRef.current) {
       playNext();
     }
   }, [playNext]);
 
   const speakSequence = useCallback((texts: string[]) => {
-    queueRef.current.push(...texts);
+    queueRef.current.push(...texts.map(text => ({ text })));
     if (!isPlayingRef.current) {
       playNext();
     }

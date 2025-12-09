@@ -125,9 +125,9 @@ export function useFlashSession(): UseFlashSessionReturn {
   }, []);
 
   // Speak helper using ref
-  const speak = useCallback((text: string) => {
+  const speak = useCallback((text: string, onStart?: () => void) => {
     if (!isMutedRef.current) {
-      ttsRef.current.speak(text);
+      ttsRef.current.speak(text, onStart);
     }
   }, []);
 
@@ -192,15 +192,15 @@ export function useFlashSession(): UseFlashSessionReturn {
     // Schedule all 5 flashes
     const scheduleFlash = (flashNum: number, delay: number) => {
       addTimeout(() => {
-        // Visual
-        setBlinkActive(true);
-        setBlinkCount(flashNum + 1);
+        // Audio with visual sync on start
+        speak(VOICE_SCRIPTS.flash, () => {
+          // Visual flash synchronized with audio start
+          setBlinkActive(true);
+          setBlinkCount(flashNum + 1);
 
-        // Audio
-        speak(VOICE_SCRIPTS.flash);
-
-        // End visual
-        addTimeout(() => setBlinkActive(false), 400);
+          // End visual after 400ms
+          setTimeout(() => setBlinkActive(false), 400);
+        });
 
         // Reminder 2s after (not on last flash)
         if (flashNum < FLASH_CONFIG.FLASHES_PER_SET - 1) {
