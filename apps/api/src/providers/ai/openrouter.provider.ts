@@ -329,21 +329,31 @@ export class OpenRouterProvider {
       `Sending chat request to OpenRouter using model: ${model} (tier: ${options.modelTier}, thinking: ${options.thinking?.enabled ?? false})`,
     );
 
+    // Calculate tokens - when using extended thinking, max_tokens must be > reasoning budget
+    const thinkingBudget = options.thinking?.budgetTokens || this.thinkingBudget;
+    const useThinking = options.thinking?.enabled && model.includes('anthropic/claude');
+
+    // If thinking enabled, max_tokens must be greater than thinking budget
+    // Add 4096 for the actual response on top of thinking budget
+    const maxTokens = useThinking
+      ? thinkingBudget + 4096
+      : (options.generation?.maxTokens || 4096);
+
     const requestBody: Record<string, unknown> = {
       model,
       messages,
       temperature,
-      max_tokens: options.generation?.maxTokens || 4096,
+      max_tokens: maxTokens,
       response_format: { type: 'json_object' },
     };
 
     // Add reasoning parameter for Claude models with extended thinking
-    if (options.thinking?.enabled && model.includes('anthropic/claude')) {
+    if (useThinking) {
       requestBody.reasoning = {
-        max_tokens: options.thinking.budgetTokens || this.thinkingBudget,
+        max_tokens: thinkingBudget,
       };
       this.logger.log(
-        `Extended thinking enabled with budget: ${options.thinking.budgetTokens || this.thinkingBudget} tokens`,
+        `Extended thinking enabled with budget: ${thinkingBudget} tokens (total max: ${maxTokens})`,
       );
     }
 
