@@ -4,31 +4,27 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import './WelcomeDemo.css';
 
 // Timeline keyframes synchronized with audio (~25 seconds)
-// Adjusted based on actual ElevenLabs audio pacing
 const TIMELINE = {
-  // "Welcome to Vematcha — your safe space..."
   welcome: { start: 0, end: 3500 },
-  // "Using the clinically-proven Flash Technique..."
   flashTechnique: { start: 3500, end: 7500 },
-  // "we help you process difficult memories..."
   processing: { start: 7500, end: 11500 },
-  // "Simply focus on a peaceful place..."
   peacefulPlace: { start: 11500, end: 14500 },
-  // "while we guide you through gentle stimulation..."
   stimulation: { start: 14500, end: 18500 },
-  // "Safe. Effective. Gentle."
   safeEffective: { start: 18500, end: 21500 },
-  // "Your healing journey starts here."
   journey: { start: 21500, end: 26000 },
 };
 
+const TOTAL_DURATION = 26000;
+
 export default function WelcomeDemo() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [hasEnded, setHasEnded] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const animationFrameRef = useRef<number | null>(null);
+  const [audioFailed, setAudioFailed] = useState(false);
+
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const timerRef = useRef<number | null>(null);
+  const startTimeRef = useRef<number>(0);
 
   // Determine which phase we're in
   const getPhase = useCallback((time: number) => {
@@ -43,155 +39,119 @@ export default function WelcomeDemo() {
 
   const phase = getPhase(currentTime);
 
-  // Animation loop
-  useEffect(() => {
-    if (!isPlaying || !audioRef.current) return;
+  // Timer-based fallback for when audio doesn't work
+  const startTimer = useCallback(() => {
+    startTimeRef.current = Date.now();
 
-    const updateTime = () => {
-      if (audioRef.current) {
-        setCurrentTime(audioRef.current.currentTime * 1000);
-      }
-      animationFrameRef.current = requestAnimationFrame(updateTime);
-    };
-
-    animationFrameRef.current = requestAnimationFrame(updateTime);
-
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [isPlaying]);
-
-  const handlePlay = async () => {
-    setIsLoading(true);
-
-    try {
-      if (!audioRef.current) {
-        audioRef.current = new Audio('/welcome-demo.mp3');
-        // Required for iOS
-        audioRef.current.setAttribute('playsinline', 'true');
-        audioRef.current.preload = 'auto';
-
-        audioRef.current.onended = () => {
-          setIsPlaying(false);
-          setHasEnded(true);
-        };
-
-        // Wait for audio to be ready on mobile
-        await new Promise<void>((resolve, reject) => {
-          const audio = audioRef.current!;
-
-          const onCanPlay = () => {
-            audio.removeEventListener('canplaythrough', onCanPlay);
-            audio.removeEventListener('error', onError);
-            resolve();
-          };
-
-          const onError = () => {
-            audio.removeEventListener('canplaythrough', onCanPlay);
-            audio.removeEventListener('error', onError);
-            reject(new Error('Audio failed to load'));
-          };
-
-          audio.addEventListener('canplaythrough', onCanPlay);
-          audio.addEventListener('error', onError);
-
-          // Trigger load
-          audio.load();
-        });
-      }
-
-      if (hasEnded) {
-        audioRef.current.currentTime = 0;
-        setCurrentTime(0);
-        setHasEnded(false);
-      }
-
-      // Actually play and wait for it to start
-      await audioRef.current.play();
-      setIsPlaying(true);
-    } catch (error) {
-      console.error('Audio playback failed:', error);
-      // Still allow demo to run without audio on mobile if blocked
-      setIsPlaying(true);
-      // Start a fallback timer for phases
-      startFallbackTimer();
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Fallback timer when audio fails (for silent demo)
-  const fallbackTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-  const startFallbackTimer = () => {
-    const startTime = Date.now();
     const tick = () => {
-      const elapsed = Date.now() - startTime;
+      const elapsed = Date.now() - startTimeRef.current;
       setCurrentTime(elapsed);
-      if (elapsed < 26000) {
-        fallbackTimerRef.current = setTimeout(tick, 50);
-      } else {
+
+      if (elapsed >= TOTAL_DURATION) {
         setIsPlaying(false);
         setHasEnded(true);
+      } else {
+        timerRef.current = window.requestAnimationFrame(tick);
       }
     };
-    tick();
-  };
 
-  const handlePause = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
-    if (fallbackTimerRef.current) {
-      clearTimeout(fallbackTimerRef.current);
-    }
-    setIsPlaying(false);
-  };
+    timerRef.current = window.requestAnimationFrame(tick);
+  }, []);
 
-  const handleReplay = async () => {
-    if (fallbackTimerRef.current) {
-      clearTimeout(fallbackTimerRef.current);
+  const stopTimer = useCallback(() => {
+    if (timerRef.current) {
+      window.cancelAnimationFrame(timerRef.current);
+      timerRef.current = null;
     }
+  }, []);
+
+  // Handle audio time updates
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleTimeUpdate = () => {
+      setCurrentTime(audio.currentTime * 1000);
+    };
+
+    const handleEnded = () => {
+      setIsPlaying(false);
+      setHasEnded(true);
+      stopTimer();
+    };
+
+    const handleError = () => {
+      console.log('Audio error, using timer fallback');
+      setAudioFailed(true);
+      if (isPlaying) {
+        startTimer();
+      }
+    };
+
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('error', handleError);
+
+    return () => {
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('error', handleError);
+    };
+  }, [isPlaying, startTimer, stopTimer]);
+
+  const handlePlay = async () => {
+    const audio = audioRef.current;
 
     setCurrentTime(0);
     setHasEnded(false);
+    setIsPlaying(true);
 
-    if (audioRef.current) {
+    if (audio && !audioFailed) {
       try {
-        audioRef.current.currentTime = 0;
-        await audioRef.current.play();
-        setIsPlaying(true);
-      } catch (error) {
-        console.error('Audio replay failed:', error);
-        setIsPlaying(true);
-        startFallbackTimer();
+        audio.currentTime = 0;
+        await audio.play();
+        // Audio is playing, timeupdate will handle progress
+      } catch (err) {
+        console.log('Audio play failed, using timer:', err);
+        setAudioFailed(true);
+        startTimer();
       }
     } else {
-      setIsPlaying(true);
-      startFallbackTimer();
+      // No audio or already failed, use timer
+      startTimer();
     }
+  };
+
+  const handlePause = () => {
+    const audio = audioRef.current;
+    if (audio && !audioFailed) {
+      audio.pause();
+    }
+    stopTimer();
+    setIsPlaying(false);
+  };
+
+  const handleReplay = () => {
+    handlePlay();
   };
 
   // Cleanup
   useEffect(() => {
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-      if (fallbackTimerRef.current) {
-        clearTimeout(fallbackTimerRef.current);
-      }
+      stopTimer();
     };
-  }, []);
+  }, [stopTimer]);
 
   return (
     <section className="welcome-demo-section">
+      {/* Hidden audio element - better mobile support than dynamic Audio() */}
+      <audio
+        ref={audioRef}
+        src="/welcome-demo.mp3"
+        preload="auto"
+        playsInline
+      />
+
       <div className="welcome-demo-container">
         {/* Ambient glow */}
         <div className="demo-ambient">
@@ -312,20 +272,11 @@ export default function WelcomeDemo() {
             {/* Play overlay */}
             {!isPlaying && !hasEnded && (
               <div className="play-overlay">
-                <button className="play-btn" onClick={handlePlay} disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <div className="loading-spinner" />
-                      <span>Loading...</span>
-                    </>
-                  ) : (
-                    <>
-                      <svg viewBox="0 0 24 24" fill="currentColor">
-                        <polygon points="5 3 19 12 5 21 5 3" />
-                      </svg>
-                      <span>Watch Demo</span>
-                    </>
-                  )}
+                <button className="play-btn" onClick={handlePlay}>
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  </svg>
+                  <span>Watch Demo</span>
                 </button>
               </div>
             )}
@@ -349,7 +300,7 @@ export default function WelcomeDemo() {
             <div className="demo-progress">
               <div
                 className="progress-fill"
-                style={{ width: `${Math.min((currentTime / 26000) * 100, 100)}%` }}
+                style={{ width: `${Math.min((currentTime / TOTAL_DURATION) * 100, 100)}%` }}
               />
             </div>
           )}

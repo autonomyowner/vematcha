@@ -610,27 +610,6 @@
   color: #7db88f;
 }
 
-.play-btn:disabled {
-  opacity: 0.7;
-  cursor: wait;
-}
-
-/* Loading spinner */
-.loading-spinner {
-  width: 48px;
-  height: 48px;
-  border: 3px solid rgba(125, 184, 143, 0.2);
-  border-top-color: #7db88f;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 /* Pause button */
 .pause-overlay-btn {
   position: absolute;
@@ -862,12 +841,6 @@
   .play-btn svg {
     width: 56px;
     height: 56px;
-  }
-
-  .loading-spinner {
-    width: 56px;
-    height: 56px;
-    border-width: 4px;
   }
 
   /* Pause button - larger touch target */
