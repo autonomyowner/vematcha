@@ -53,6 +53,13 @@ export default function Header() {
             >
               {t.header.pricing}
             </Link>
+            <Link
+              href="/breathing"
+              className="text-sm font-medium transition-colors hover:text-[var(--matcha-600)]"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              Breathe
+            </Link>
             <SignedIn>
               <Link
                 href="/dashboard"
@@ -164,6 +171,14 @@ export default function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {t.header.pricing}
+              </Link>
+              <Link
+                href="/breathing"
+                className="text-sm font-medium py-2"
+                style={{ color: 'var(--text-secondary)' }}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Breathe
               </Link>
               <SignedIn>
                 <Link
