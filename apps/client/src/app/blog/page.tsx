@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useLanguage } from '../../components/LanguageProvider';
-import Header from '../../components/Header';
 
 interface BlogArticle {
   id: string;
@@ -592,8 +591,6 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--cream-50)' }}>
-      <Header />
-
       {selectedArticle && currentArticle ? (
         /* Article View */
         <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
