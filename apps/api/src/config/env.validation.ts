@@ -40,6 +40,13 @@ export const envSchema = z.object({
   OPENROUTER_THINKING_BUDGET: z.string().default('10000').transform(Number),
   OPENROUTER_FAST_TEMPERATURE: z.string().default('0.7').transform(Number),
   OPENROUTER_DEEP_TEMPERATURE: z.string().default('0.3').transform(Number),
+
+  // Vapi.ai Voice Infrastructure
+  VAPI_API_KEY: z.string().optional(),
+  VAPI_PUBLIC_KEY: z.string().optional(),
+
+  // ElevenLabs Text-to-Speech
+  ELEVENLABS_API_KEY: z.string().optional(),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;

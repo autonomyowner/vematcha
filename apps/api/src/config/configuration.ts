@@ -46,5 +46,14 @@ export default () => {
       fastTemperature: env.OPENROUTER_FAST_TEMPERATURE,
       deepTemperature: env.OPENROUTER_DEEP_TEMPERATURE,
     },
+
+    vapi: {
+      apiKey: env.VAPI_API_KEY,
+      publicKey: env.VAPI_PUBLIC_KEY,
+    },
+
+    elevenlabs: {
+      apiKey: env.ELEVENLABS_API_KEY,
+    },
   };
 };

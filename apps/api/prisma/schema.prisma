@@ -45,6 +45,7 @@ model User {
   analyses      Analysis[]
   usageLimit    UsageLimit?
   conversations Conversation[]
+  voiceSessions VoiceSession[]
 
   @@map("users")
 }
@@ -98,9 +99,10 @@ model Conversation {
   insights          Json?
   analysisUpdatedAt DateTime? @map("analysis_updated_at")
 
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  messages    Message[]
-  emdrSession EmdrSession?
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages      Message[]
+  emdrSession   EmdrSession?
+  voiceSessions VoiceSession[]
 
   @@index([userId, updatedAt(sort: Desc)])
   @@map("conversations")
@@ -148,4 +150,38 @@ model EmdrSession {
   conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@map("emdr_sessions")
+}
+
+enum VoiceSessionStatus {
+  active
+  completed
+  failed
+  cancelled
+}
+
+model VoiceSession {
+  id             String             @id @default(cuid())
+  userId         String             @map("user_id")
+  conversationId String?            @map("conversation_id") // Optional link to conversation
+  vapiCallId     String             @unique @map("vapi_call_id") // Vapi's call ID
+  sessionType    String             @map("session_type") // 'general-therapy' | 'flash-technique' | 'crisis-support'
+  status         VoiceSessionStatus @default(active)
+
+  // Session data
+  transcript     String?            @db.Text
+  duration       Int?               // Duration in seconds
+  vapiCosts      Json?              @map("vapi_costs") // Cost breakdown from Vapi
+
+  // Timestamps
+  createdAt      DateTime           @default(now()) @map("created_at")
+  startedAt      DateTime?          @map("started_at")
+  endedAt        DateTime?          @map("ended_at")
+
+  // Relations
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversation Conversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([vapiCallId])
+  @@map("voice_sessions")
 }

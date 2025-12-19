@@ -365,4 +365,33 @@ export const api = {
       method: 'POST',
       token,
     }),
+
+  // Voice Therapy Sessions
+  startVoiceSession: (token: string, data: { sessionType: 'general-therapy' | 'flash-technique' | 'crisis-support'; createNewConversation?: boolean; conversationId?: string }) =>
+    apiClient<{
+      sessionId: string;
+      webCallUrl: string;
+      vapiPublicKey: string;
+      callId: string;
+      conversationId?: string;
+    }>('/voice/start', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      token,
+    }),
+
+  getVoiceSession: (token: string, sessionId: string) =>
+    apiClient<any>(`/voice/sessions/${sessionId}`, { token }),
+
+  endVoiceSession: (token: string, sessionId: string) =>
+    apiClient<{ session: any; transcript: string; duration: number }>(`/voice/sessions/${sessionId}/end`, {
+      method: 'PATCH',
+      token,
+    }),
+
+  getVoiceSessionHistory: (token: string, page = 1, limit = 20) =>
+    apiClient<{
+      sessions: any[];
+      pagination: { page: number; limit: number; total: number; totalPages: number };
+    }>(`/voice/sessions?page=${page}&limit=${limit}`, { token }),
 };

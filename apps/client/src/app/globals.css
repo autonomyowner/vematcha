@@ -23,6 +23,9 @@
   --cream-500: #c4b08a;
 
   /* Accent - Terracotta (warmth) */
+  --terra-50: #fef7f4;
+  --terra-100: #fee2d6;
+  --terra-200: #fcc4a8;
   --terra-300: #f5a572;
   --terra-400: #e07b4c;
   --terra-500: #c45d2c;
@@ -193,7 +196,13 @@ body {
 
 /* Section backgrounds */
 .bg-warm-gradient {
-  background: linear-gradient(180deg, var(--cream-50) 0%, var(--cream-100) 50%, var(--cream-200) 100%);
+  background: radial-gradient(circle at 50% 0%, var(--cream-50) 0%, var(--cream-100) 100%);
+}
+
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
 }
 
 .bg-matcha-soft {

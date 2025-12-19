@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@clerk/nextjs';
 import { useLanguage } from '../../components/LanguageProvider';
 import { api, Conversation, Message, AnalysisData } from '../../lib/api';
+import { VoiceTherapySession } from '../../components/VoiceTherapySession';
 
 export default function ChatPage() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function ChatPage() {
   const [isSending, setIsSending] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [analysisPanelOpen, setAnalysisPanelOpen] = useState(false);
+  const [showVoiceSession, setShowVoiceSession] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -193,6 +195,26 @@ export default function ChatPage() {
   const handleStartFlashSession = () => {
     router.push('/flash-session');
   };
+
+  // Handle voice session end
+  const handleVoiceSessionEnd = useCallback((transcript: string[]) => {
+    setShowVoiceSession(false);
+
+    if (transcript.length > 0) {
+      // Add transcript messages to chat
+      const voiceMessages: Message[] = transcript.map((text, index) => {
+        const isUser = text.startsWith('You:');
+        return {
+          id: `voice-${Date.now()}-${index}`,
+          conversationId: activeConversationId || '',
+          role: isUser ? 'USER' : 'ASSISTANT',
+          content: text.replace(/^(You|Matcha): /, ''),
+          createdAt: new Date().toISOString(),
+        };
+      });
+      setMessages(prev => [...prev, ...voiceMessages]);
+    }
+  }, [activeConversationId]);
 
   if (!isLoaded || !isSignedIn) {
     return (
@@ -462,6 +484,19 @@ export default function ChatPage() {
                 disabled={isSending}
               />
               <button
+                onClick={() => setShowVoiceSession(true)}
+                className="p-2.5 sm:p-3 rounded-xl transition-all flex-shrink-0 hover:bg-[var(--matcha-100)]"
+                style={{ color: 'var(--matcha-600)' }}
+                title="Start voice conversation"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                  <line x1="12" y1="19" x2="12" y2="23" />
+                  <line x1="8" y1="23" x2="16" y2="23" />
+                </svg>
+              </button>
+              <button
                 onClick={sendMessage}
                 disabled={!inputValue.trim() || isSending}
                 className="p-2.5 sm:p-3 rounded-xl transition-all disabled:opacity-50 flex-shrink-0"
@@ -649,6 +684,27 @@ export default function ChatPage() {
           )}
         </div>
       </div>
+
+      {/* Voice Session Modal */}
+      {showVoiceSession && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="relative w-full max-w-2xl mx-4">
+            <button
+              onClick={() => setShowVoiceSession(false)}
+              className="absolute -top-12 right-0 text-white/80 hover:text-white transition-colors"
+            >
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+            <VoiceTherapySession
+              sessionType="general-therapy"
+              onSessionEnd={handleVoiceSessionEnd}
+            />
+          </div>
+        </div>
+      )}
 
     </div>
   );
