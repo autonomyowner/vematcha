@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useLanguage } from '../../components/LanguageProvider';
+import Header from '../../components/Header';
 
 interface BlogArticle {
   id: string;
@@ -591,44 +592,7 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--cream-50)' }}>
-      {/* Header */}
-      <header
-        className="border-b sticky top-0 z-50"
-        style={{
-          background: 'rgba(255, 255, 255, 0.9)',
-          backdropFilter: 'blur(8px)',
-          borderColor: 'var(--border-soft)'
-        }}
-      >
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
-          <Link
-            href="/"
-            className="text-2xl"
-            style={{
-              fontFamily: 'var(--font-dm-serif), Georgia, serif',
-              color: 'var(--matcha-600)'
-            }}
-          >
-            Matcha
-          </Link>
-          <nav className="flex gap-6">
-            <Link
-              href="/"
-              className="text-sm hover:opacity-70 transition-opacity"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              {language === 'en' ? 'Home' : 'Accueil'}
-            </Link>
-            <Link
-              href="/pricing"
-              className="text-sm hover:opacity-70 transition-opacity"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              {language === 'en' ? 'Pricing' : 'Tarifs'}
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Header />
 
       {selectedArticle && currentArticle ? (
         /* Article View */

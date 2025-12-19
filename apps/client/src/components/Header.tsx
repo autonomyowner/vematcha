@@ -60,6 +60,13 @@ export default function Header() {
             >
               Breathe
             </Link>
+            <Link
+              href="/blog"
+              className="text-sm font-medium transition-colors hover:text-[var(--matcha-600)]"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              Blog
+            </Link>
             <SignedIn>
               <Link
                 href="/dashboard"
@@ -179,6 +186,14 @@ export default function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Breathe
+              </Link>
+              <Link
+                href="/blog"
+                className="text-sm font-medium py-2"
+                style={{ color: 'var(--text-secondary)' }}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Blog
               </Link>
               <SignedIn>
                 <Link
