@@ -7,6 +7,46 @@ import { useLanguage } from '../../components/LanguageProvider';
 import { api, Conversation, Message, AnalysisData } from '../../lib/api';
 import { VoiceTherapySession } from '../../components/VoiceTherapySession';
 
+
+const formatTime = (dateString: string) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+};
+
+const SUGGESTIONS = [
+  { 
+    label: "Vent about my day", 
+    prompt: "I need to vent about my day. It's been really stressful and I just need someone to listen.",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5 10 10 0 0 0-10 10 10 10 0 0 0 10 10 10 10 0 0 0 10-10 10 10 0 0 0-10-10z" opacity="0.1"/>
+        <path d="M8 12h8m-4-4v8"/>
+      </svg>
+    ) 
+  },
+  { 
+    label: "Analyze a decision", 
+    prompt: "I'm trying to make a difficult decision and I'm feeling stuck. Can you help me think through it?",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+    )
+  },
+  { 
+    label: "Understanding anxiety", 
+    prompt: "I've been feeling really anxious lately and I want to understand why.",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+      </svg>
+    )
+  },
+];
+
 export default function ChatPage() {
   const router = useRouter();
   const { isSignedIn, isLoaded, getToken } = useAuth();
@@ -405,36 +445,66 @@ export default function ChatPage() {
         </div>
 
         {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto p-3 sm:p-4">
-          <div className="max-w-3xl mx-auto">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-4 scroll-smooth">
+          <div className="max-w-4xl mx-auto">
             {messages.length === 0 ? (
-              <div className="h-full flex items-center justify-center py-12">
-                <div className="text-center px-4">
+              <div className="h-full flex items-center justify-center py-8">
+                <div className="text-center px-4 max-w-2xl w-full">
                   <div
-                    className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
-                    style={{ background: 'var(--matcha-100)' }}
+                    className="w-16 h-16 mx-auto mb-6 rounded-2xl flex items-center justify-center transform rotate-3 transition-transform hover:rotate-6"
+                    style={{ 
+                      background: 'linear-gradient(135deg, var(--matcha-100), var(--cream-100))',
+                      boxShadow: 'var(--shadow-md)' 
+                    }}
                   >
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--matcha-600)" strokeWidth="2">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--matcha-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                     </svg>
                   </div>
                   <h2
-                    className="text-lg sm:text-xl mb-2"
+                    className="text-2xl sm:text-3xl mb-3 font-medium"
                     style={{ fontFamily: 'var(--font-dm-serif), Georgia, serif', color: 'var(--text-primary)' }}
                   >
-                    {t.chat?.welcomeTitle || 'Start a conversation'}
+                    {t.chat?.welcomeTitle || 'How are you feeling today?'}
                   </h2>
-                  <p className="text-sm sm:text-base" style={{ color: 'var(--text-secondary)' }}>
-                    {t.chat?.welcomeSubtitle || "Ask me anything and I'll help you understand your thinking"}
+                  <p className="text-base sm:text-lg mb-8 max-w-lg mx-auto leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                    {t.chat?.welcomeSubtitle || "I'm here to listen and help you understand your thoughts and feelings."}
                   </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {SUGGESTIONS.map((suggestion, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          setInputValue(suggestion.prompt);
+                          inputRef.current?.focus();
+                        }}
+                        className="p-4 rounded-xl text-left transition-all hover:-translate-y-1"
+                        style={{ 
+                          background: 'var(--bg-card)', 
+                          border: '1px solid var(--border-soft)',
+                          boxShadow: 'var(--shadow-sm)'
+                        }}
+                      >
+                        <div className="mb-2" style={{ color: 'var(--matcha-600)' }}>
+                          {suggestion.icon}
+                        </div>
+                        <div className="font-medium text-sm" style={{ color: 'var(--text-primary)' }}>
+                          {suggestion.label}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             ) : (
-              <div className="space-y-3 sm:space-y-4">
+              <div className="space-y-4">
                 {messages.map((message) => (
-                  <div key={message.id} className={`flex ${message.role === 'USER' ? 'justify-end' : 'justify-start'}`}>
+                  <div key={message.id} className={`flex flex-col ${message.role === 'USER' ? 'items-end' : 'items-start'}`}>
                     <div
-                      className={`max-w-[85%] sm:max-w-[80%] p-3 sm:p-4 rounded-2xl ${message.role === 'USER' ? 'rounded-br-md' : 'rounded-bl-md'}`}
+                      className={`max-w-[85%] sm:max-w-[80%] px-4 py-3 rounded-2xl ${
+                        message.role === 'USER' ? 'rounded-br-sm' : 'rounded-bl-sm'
+                      }`}
                       style={{
                         background: message.role === 'USER'
                           ? 'linear-gradient(135deg, var(--matcha-500) 0%, var(--matcha-600) 100%)'
@@ -444,8 +514,16 @@ export default function ChatPage() {
                         boxShadow: 'var(--shadow-sm)',
                       }}
                     >
-                      <p className="whitespace-pre-wrap text-sm sm:text-base">{message.content}</p>
+                      <p className="whitespace-pre-wrap text-sm sm:text-base leading-relaxed">{message.content}</p>
                     </div>
+                    {message.createdAt && (
+                      <span 
+                        className="text-[10px] sm:text-xs mt-1 px-1 opacity-60"
+                        style={{ color: 'var(--text-muted)' }}
+                      >
+                        {formatTime(message.createdAt)}
+                      </span>
+                    )}
                   </div>
                 ))}
                 {isSending && (
@@ -467,7 +545,7 @@ export default function ChatPage() {
 
         {/* Input Area */}
         <div className="p-3 sm:p-4 flex-shrink-0" style={{ background: 'var(--cream-50)' }}>
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <div
               className="flex items-end gap-2 sm:gap-3 p-2 sm:p-3 rounded-2xl"
               style={{ background: 'var(--bg-card)', border: '1px solid var(--border-medium)', boxShadow: 'var(--shadow-md)' }}
@@ -485,8 +563,20 @@ export default function ChatPage() {
               />
               <button
                 onClick={() => setShowVoiceSession(true)}
-                className="p-2.5 sm:p-3 rounded-xl transition-all flex-shrink-0 hover:bg-[var(--matcha-100)]"
-                style={{ color: 'var(--matcha-600)' }}
+                className="p-3 rounded-xl transition-all duration-200 flex-shrink-0 hover:scale-[1.02]"
+                style={{
+                  color: 'var(--matcha-600)',
+                  background: 'var(--cream-100)',
+                  border: '1px solid var(--matcha-200)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'var(--matcha-100)';
+                  e.currentTarget.style.boxShadow = '0 0 12px rgba(104, 166, 125, 0.25)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'var(--cream-100)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
                 title="Start voice conversation"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -687,13 +777,44 @@ export default function ChatPage() {
 
       {/* Voice Session Modal */}
       {showVoiceSession && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="relative w-full max-w-2xl mx-4">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
+          style={{
+            background: 'rgba(0, 0, 0, 0.6)',
+            animation: 'fadeIn 200ms ease',
+          }}
+        >
+          <style jsx>{`
+            @keyframes fadeIn {
+              from { opacity: 0; }
+              to { opacity: 1; }
+            }
+            @keyframes slideUp {
+              from { opacity: 0; transform: translateY(20px); }
+              to { opacity: 1; transform: translateY(0); }
+            }
+          `}</style>
+          <div
+            className="relative w-full max-w-2xl mx-4"
+            style={{ animation: 'slideUp 300ms ease' }}
+          >
             <button
               onClick={() => setShowVoiceSession(false)}
-              className="absolute -top-12 right-0 text-white/80 hover:text-white transition-colors"
+              className="absolute -top-12 right-0 p-2 rounded-full transition-all duration-200 hover:scale-105"
+              style={{
+                color: 'rgba(255, 255, 255, 0.8)',
+                background: 'rgba(255, 255, 255, 0.1)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = 'white';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+              }}
             >
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>

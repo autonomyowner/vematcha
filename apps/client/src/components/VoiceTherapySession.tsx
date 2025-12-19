@@ -16,14 +16,11 @@ export function VoiceTherapySession({
   const [isCallActive, setIsCallActive] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [transcript, setTranscript] = useState<Array<{ role: string; text: string; time: Date }>>([]);
+  const [currentMessage, setCurrentMessage] = useState<{ role: string; text: string } | null>(null);
+  const [messageVisible, setMessageVisible] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [volumeLevel, setVolumeLevel] = useState(0);
-  const transcriptEndRef = useRef<HTMLDivElement>(null);
-
-  // Auto-scroll transcript to bottom
-  useEffect(() => {
-    transcriptEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [transcript]);
+  const fadeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Initialize Vapi client
   useEffect(() => {
@@ -70,14 +67,28 @@ export function VoiceTherapySession({
       // Handle transcript updates
       if (message.type === 'transcript' && message.transcriptType === 'final') {
         const role = message.role === 'user' ? 'You' : 'Matcha';
-        setTranscript(prev => [
-          ...prev,
-          {
-            role,
-            text: message.transcript,
-            time: new Date(),
-          },
-        ]);
+        const newMessage = {
+          role,
+          text: message.transcript,
+          time: new Date(),
+        };
+
+        // Add to full transcript for callback
+        setTranscript(prev => [...prev, newMessage]);
+
+        // Show current message with fade
+        setCurrentMessage({ role, text: message.transcript });
+        setMessageVisible(true);
+
+        // Clear any existing timeout
+        if (fadeTimeoutRef.current) {
+          clearTimeout(fadeTimeoutRef.current);
+        }
+
+        // Fade out after 3 seconds
+        fadeTimeoutRef.current = setTimeout(() => {
+          setMessageVisible(false);
+        }, 3000);
       }
     });
 
@@ -105,6 +116,9 @@ export function VoiceTherapySession({
 
     return () => {
       vapiInstance.stop();
+      if (fadeTimeoutRef.current) {
+        clearTimeout(fadeTimeoutRef.current);
+      }
     };
   }, []);
 
@@ -196,28 +210,57 @@ export function VoiceTherapySession({
 
   return (
     <div className="voice-therapy-session max-w-4xl mx-auto p-6">
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+      <div
+        className="rounded-2xl overflow-hidden"
+        style={{
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-soft)',
+          boxShadow: 'var(--shadow-lg)',
+          backdropFilter: 'blur(8px)',
+        }}
+      >
         {/* Header */}
-        <div className="bg-gradient-to-r from-green-50 to-green-100 p-6 border-b">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <div
+          className="p-6"
+          style={{
+            background: 'linear-gradient(135deg, var(--matcha-50) 0%, var(--cream-100) 100%)',
+            borderBottom: '1px solid var(--border-soft)',
+          }}
+        >
+          <h2
+            className="text-2xl font-bold mb-2"
+            style={{ color: 'var(--text-primary)' }}
+          >
             {getSessionTitle()}
           </h2>
-          <p className="text-gray-600">
+          <p style={{ color: 'var(--text-secondary)' }}>
             {getSessionDescription()}
           </p>
         </div>
 
         {/* Error Display */}
         {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-4 m-6">
+          <div
+            className="m-6 p-4 rounded-xl"
+            style={{
+              background: 'var(--terra-50)',
+              borderLeft: '4px solid var(--terra-500)',
+            }}
+          >
             <div className="flex">
               <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <svg className="h-5 w-5" style={{ color: 'var(--terra-500)' }} viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                 </svg>
               </div>
               <div className="ml-3">
-                <p className="text-sm text-red-700">{error}</p>
+                <p className="text-sm" style={{ color: 'var(--terra-600)' }}>{error}</p>
               </div>
             </div>
           </div>
@@ -228,7 +271,12 @@ export function VoiceTherapySession({
           {!isCallActive && !isConnecting && (
             <button
               onClick={startCall}
-              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-8 rounded-full flex items-center space-x-3 transition-all transform hover:scale-105 shadow-lg"
+              className="font-semibold py-4 px-8 rounded-full flex items-center space-x-3 transition-all duration-200 transform hover:scale-[1.02]"
+              style={{
+                background: 'linear-gradient(135deg, var(--matcha-500) 0%, var(--matcha-600) 100%)',
+                color: 'var(--text-inverse)',
+                boxShadow: '0 4px 14px rgba(104, 166, 125, 0.35)',
+              }}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
@@ -239,8 +287,12 @@ export function VoiceTherapySession({
 
           {isConnecting && (
             <div className="flex flex-col items-center space-y-3">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-              <p className="text-gray-600">Connecting...</p>
+              <div className="flex gap-1">
+                <span className="w-3 h-3 rounded-full animate-bounce" style={{ background: 'var(--matcha-500)', animationDelay: '0ms' }}></span>
+                <span className="w-3 h-3 rounded-full animate-bounce" style={{ background: 'var(--matcha-500)', animationDelay: '150ms' }}></span>
+                <span className="w-3 h-3 rounded-full animate-bounce" style={{ background: 'var(--matcha-500)', animationDelay: '300ms' }}></span>
+              </div>
+              <p style={{ color: 'var(--text-secondary)' }}>Connecting to Matcha...</p>
             </div>
           )}
 
@@ -248,32 +300,43 @@ export function VoiceTherapySession({
             <>
               {/* Volume Indicator */}
               <div className="flex items-center space-x-4 mb-4">
-                <div className="relative w-20 h-20">
-                  <svg className="animate-pulse" viewBox="0 0 100 100">
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r={40 + volumeLevel * 10}
-                      fill="rgba(34, 197, 94, 0.2)"
-                      className="transition-all duration-100"
-                    />
-                    <circle cx="50" cy="50" r="35" fill="#22c55e" />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <div className="relative w-24 h-24">
+                  {/* Outer glow ring */}
+                  <div
+                    className="absolute inset-0 rounded-full transition-all duration-150"
+                    style={{
+                      background: 'linear-gradient(135deg, var(--matcha-400), var(--matcha-600))',
+                      transform: `scale(${1 + volumeLevel * 0.3})`,
+                      opacity: 0.2 + volumeLevel * 0.3,
+                    }}
+                  />
+                  {/* Inner orb */}
+                  <div
+                    className="absolute inset-2 rounded-full flex items-center justify-center transition-all duration-150"
+                    style={{
+                      background: 'linear-gradient(135deg, var(--matcha-500) 0%, var(--matcha-600) 100%)',
+                      boxShadow: '0 0 40px rgba(104, 166, 125, 0.4)',
+                    }}
+                  >
+                    <svg className="w-10 h-10" style={{ color: 'var(--text-inverse)' }} fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
                     </svg>
                   </div>
                 </div>
                 <div className="text-center">
-                  <p className="text-sm text-gray-500">Session Active</p>
-                  <p className="text-xs text-gray-400">Speak naturally</p>
+                  <p className="text-sm" style={{ color: 'var(--text-primary)' }}>Session Active</p>
+                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Speak naturally</p>
                 </div>
               </div>
 
               <button
                 onClick={endCall}
-                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-full flex items-center space-x-2 transition-all shadow-lg"
+                className="font-semibold py-3 px-6 rounded-full flex items-center space-x-2 transition-all duration-200 hover:scale-[1.02]"
+                style={{
+                  background: 'var(--terra-500)',
+                  color: 'var(--text-inverse)',
+                  boxShadow: '0 4px 14px rgba(180, 120, 120, 0.3)',
+                }}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -284,43 +347,40 @@ export function VoiceTherapySession({
           )}
         </div>
 
-        {/* Transcript */}
-        {transcript.length > 0 && (
-          <div className="border-t p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Transcript</h3>
-            <div className="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto space-y-3">
-              {transcript.map((entry, index) => (
-                <div
-                  key={index}
-                  className={`flex ${entry.role === 'You' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div
-                    className={`max-w-[70%] rounded-lg p-3 ${
-                      entry.role === 'You'
-                        ? 'bg-green-600 text-white'
-                        : 'bg-white border border-gray-200 text-gray-900'
-                    }`}
-                  >
-                    <p className="text-xs font-semibold mb-1 opacity-75">
-                      {entry.role}
-                    </p>
-                    <p className="text-sm">{entry.text}</p>
-                    <p className="text-xs mt-1 opacity-50">
-                      {entry.time.toLocaleTimeString()}
-                    </p>
-                  </div>
-                </div>
-              ))}
-              <div ref={transcriptEndRef} />
+        {/* Current Message - Fading */}
+        {isCallActive && currentMessage && (
+          <div
+            className="px-6 pb-4 transition-opacity duration-500"
+            style={{ opacity: messageVisible ? 1 : 0 }}
+          >
+            <div
+              className="p-4 rounded-xl text-center"
+              style={{
+                background: currentMessage.role === 'You'
+                  ? 'linear-gradient(135deg, var(--matcha-500) 0%, var(--matcha-600) 100%)'
+                  : 'var(--cream-100)',
+                color: currentMessage.role === 'You' ? 'var(--text-inverse)' : 'var(--text-primary)',
+              }}
+            >
+              <p className="text-xs font-semibold mb-1" style={{ opacity: 0.7 }}>
+                {currentMessage.role === 'You' ? 'You said' : 'Matcha said'}
+              </p>
+              <p className="text-sm leading-relaxed">{currentMessage.text}</p>
             </div>
           </div>
         )}
 
         {/* Help Text */}
         {!isCallActive && !isConnecting && (
-          <div className="bg-blue-50 border-t p-4">
-            <p className="text-sm text-blue-800">
-              <strong>Tip:</strong> Make sure your microphone is enabled in your browser settings.
+          <div
+            className="p-4"
+            style={{
+              background: 'var(--cream-100)',
+              borderTop: '1px solid var(--border-soft)',
+            }}
+          >
+            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+              <strong style={{ color: 'var(--matcha-600)' }}>Tip:</strong> Make sure your microphone is enabled in your browser settings.
               You can interrupt Matcha at any time by simply speaking.
             </p>
           </div>
