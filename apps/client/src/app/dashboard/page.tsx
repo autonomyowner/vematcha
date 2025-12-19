@@ -237,7 +237,7 @@ export default function DashboardPage() {
 
             {/* CTA */}
             <div className="mt-6 pt-6 border-t" style={{ borderColor: 'var(--border-soft)' }}>
-              <Button fullWidth>
+              <Button fullWidth onClick={() => router.push('/chat')}>
                 {t.dashboard.startNewAnalysis}
               </Button>
             </div>
