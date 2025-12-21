@@ -350,8 +350,8 @@ export class VapiProvider {
         emotionRecognitionEnabled: true, // Enable emotion detection from voice
       },
       voice: {
-        provider: 'vapi',
-        voiceId: 'Lily', // Vapi's built-in calm, professional female voice
+        provider: '11labs',
+        voiceId: '21m00Tcm4TlvDq8ikWAM', // Rachel - warm, calm female voice from ElevenLabs
       },
       firstMessage: firstMessageMap[sessionType],
       transcriber: {

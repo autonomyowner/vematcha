@@ -210,8 +210,8 @@ export function useFlashSessionVoice(): UseFlashSessionVoiceReturn {
           temperature: 0.7,
         },
         voice: {
-          provider: 'vapi' as const,
-          voiceId: 'Lily',
+          provider: '11labs' as const,
+          voiceId: '21m00Tcm4TlvDq8ikWAM', // Rachel - warm female voice
         },
         firstMessage: firstMessageMap[phase],
         silenceTimeoutSeconds: phase === 'setup' ? 45 : 30,

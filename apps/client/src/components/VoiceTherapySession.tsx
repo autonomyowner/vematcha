@@ -178,8 +178,8 @@ export function VoiceTherapySession({
           ],
         },
         voice: {
-          provider: 'vapi' as const,
-          voiceId: 'Lily',
+          provider: '11labs' as const,
+          voiceId: '21m00Tcm4TlvDq8ikWAM', // Rachel - warm female voice
         },
         firstMessage: firstMessageMap[sessionType],
       };

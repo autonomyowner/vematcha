@@ -142,8 +142,8 @@ Speak naturally as if in a caring conversation with a friend.`
           ],
         },
         voice: {
-          provider: 'vapi' as const,
-          voiceId: 'Lily',
+          provider: '11labs' as const,
+          voiceId: '21m00Tcm4TlvDq8ikWAM', // Rachel - warm female voice
         },
         firstMessage: "Hey, I'm Matcha. What's on your mind?",
         silenceTimeoutSeconds: 60,
