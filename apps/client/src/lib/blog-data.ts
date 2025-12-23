@@ -9,11 +9,378 @@ export interface BlogArticle {
   category: string;
   readTime: number;
   date: string;
+  keywords: string[];
   contentEn: string;
   contentFr: string;
 }
 
 export const articles: BlogArticle[] = [
+  {
+    slug: 'nervous-system-regulation',
+    titleEn: 'Nervous System Regulation: The Science of Calming Your Brain',
+    titleFr: 'Regulation du Systeme Nerveux : La Science pour Calmer Votre Cerveau',
+    excerptEn: 'Discover evidence-based techniques backed by 2025 neuroscience research to regulate your nervous system, reduce anxiety, and build emotional resilience.',
+    excerptFr: 'Decouvrez des techniques fondees sur les preuves, soutenues par les recherches en neurosciences de 2025, pour reguler votre systeme nerveux et reduire l\'anxiete.',
+    descriptionEn: 'Learn how Polyvagal Theory, NSDR protocols, and vagus nerve stimulation can help regulate your nervous system. Evidence-based techniques from Huberman Lab and 2025 research.',
+    descriptionFr: 'Decouvrez comment la theorie polyvagale, les protocoles NSDR et la stimulation du nerf vague peuvent aider a reguler votre systeme nerveux.',
+    category: 'Neuroscience',
+    readTime: 10,
+    date: '2024-12-23',
+    keywords: [
+      'nervous system regulation',
+      'polyvagal theory',
+      'vagus nerve stimulation',
+      'NSDR protocol',
+      'non-sleep deep rest',
+      'Andrew Huberman',
+      'stress relief techniques',
+      'anxiety reduction',
+      'parasympathetic nervous system',
+      'heart rate variability',
+      'breathing exercises for anxiety',
+      'how to calm nervous system',
+      'vagal tone',
+      'fight or flight response',
+      'trauma recovery',
+    ],
+    contentEn: `
+      <p class="lead">
+        Your nervous system is the master control center of your mental and physical state. When it's
+        dysregulated, you experience anxiety, chronic stress, and emotional overwhelm. The breakthrough
+        news from 2025 neuroscience research: you can actively train your nervous system to find calm,
+        build resilience, and recover faster from stress. Here's how.
+      </p>
+
+      <h2>Understanding Your Autonomic Nervous System</h2>
+      <p>
+        Dr. Stephen Porges' Polyvagal Theory, updated in his 2025 publication in <em>Frontiers in
+        Behavioral Neuroscience</em>, provides the most comprehensive framework for understanding how
+        our nervous system regulates our emotional states. According to Porges, we operate in three
+        primary states:
+      </p>
+      <ul>
+        <li><strong>Ventral Vagal (Safe & Social):</strong> You feel connected, calm, and engaged. Your heart rate is regulated, breathing is easy, and you can think clearly.</li>
+        <li><strong>Sympathetic (Fight or Flight):</strong> Your body prepares for action. Heart rate increases, muscles tense, and your focus narrows to perceived threats.</li>
+        <li><strong>Dorsal Vagal (Shutdown):</strong> When overwhelmed, the body conserves energy through immobilization, dissociation, or numbness.</li>
+      </ul>
+      <p>
+        The key insight: these aren't just psychological states—they're measurable physiological
+        conditions. Research by Schaefer et al. (2025) demonstrated that even pupil diameter exhibits
+        respiration-coupled rhythms that reflect your autonomic state.
+      </p>
+
+      <h2>The Vagus Nerve: Your Built-In Calming System</h2>
+      <p>
+        The vagus nerve is the longest cranial nerve in your body, running from your brainstem through
+        your face, throat, heart, lungs, and gut. It's the primary pathway of the parasympathetic
+        nervous system—your "rest and digest" mode.
+      </p>
+      <p>
+        A 2025 study published in <em>Frontiers in Psychology</em> confirmed that vagus nerve
+        stimulation helps with treating PTSD, autoimmune diseases, epilepsy, and even diabetes.
+        Research by Ackland et al. (2025) showed that just one week of daily transcutaneous auricular
+        vagus nerve stimulation (taVNS) increased oxygen uptake and reduced exercise-induced inflammation.
+      </p>
+
+      <h2>Measuring Your Nervous System State</h2>
+      <p>
+        Modern research has identified objective biomarkers for tracking your regulatory capacity:
+      </p>
+      <ul>
+        <li><strong>Heart Rate Variability (HRV):</strong> Higher HRV indicates better autonomic flexibility and stress resilience</li>
+        <li><strong>Respiratory Sinus Arrhythmia (RSA):</strong> The natural variation in heart rate with breathing—a marker of vagal tone</li>
+        <li><strong>Vagal Efficiency:</strong> How effectively your vagus nerve modulates your heart rate</li>
+      </ul>
+      <p>
+        According to Kolacz et al. (2025), these measures "bridge neuroscience and clinical science,
+        transforming subjective experiences into empirically trackable data."
+      </p>
+
+      <h2>Protocol 1: Non-Sleep Deep Rest (NSDR)</h2>
+      <p>
+        Stanford neuroscientist Dr. Andrew Huberman developed the term NSDR for practices that induce
+        deep relaxation without sleep. The neuroscience is compelling: NSDR activates the parasympathetic
+        nervous system, reduces cortisol, restores dopamine levels, and enhances neuroplasticity.
+      </p>
+      <p>
+        <strong>How to Practice:</strong>
+      </p>
+      <ul>
+        <li>Lie down in a comfortable position in a quiet space</li>
+        <li>Close your eyes and listen to a guided NSDR or yoga nidra recording</li>
+        <li>Follow the guided body scan and breathing instructions</li>
+        <li>Practice for 10-30 minutes daily</li>
+      </ul>
+      <p>
+        Free NSDR protocols from Huberman Lab are available on YouTube, Spotify, and Apple Music.
+        Research shows that even brief sessions can restore mental and physical vigor while enhancing
+        the brain's ability to learn and remember.
+      </p>
+
+      <h2>Protocol 2: Physiological Sigh</h2>
+      <p>
+        The fastest way to calm your nervous system in real-time is the physiological sigh—a breathing
+        pattern discovered in the 1930s but recently validated by Stanford research. It takes just
+        one to three breaths.
+      </p>
+      <p>
+        <strong>How to Practice:</strong>
+      </p>
+      <ul>
+        <li>Take a full inhale through your nose</li>
+        <li>At the top of the inhale, take a second, shorter inhale to maximally inflate your lungs</li>
+        <li>Follow with a long, slow exhale through your mouth</li>
+        <li>Repeat 1-3 times as needed</li>
+      </ul>
+      <p>
+        This double-inhale followed by extended exhale rapidly activates the parasympathetic nervous
+        system by reinflating the alveoli in your lungs and stimulating the vagus nerve.
+      </p>
+
+      <h2>Protocol 3: Cold Exposure</h2>
+      <p>
+        Brief cold exposure (cold showers, cold plunges, or face immersion in cold water) triggers
+        the "dive reflex"—an automatic response that activates the parasympathetic nervous system.
+        This builds stress resilience over time by training your nervous system to recover quickly
+        from acute stressors.
+      </p>
+      <p>
+        <strong>How to Practice:</strong>
+      </p>
+      <ul>
+        <li>Start with 30-60 seconds of cold water at the end of your regular shower</li>
+        <li>Focus on slow, controlled breathing during exposure</li>
+        <li>Gradually increase duration over weeks (1-3 minutes is sufficient)</li>
+        <li>Practice 2-4 times per week</li>
+      </ul>
+
+      <h2>Protocol 4: Slow Exhale Breathing</h2>
+      <p>
+        When your exhale is longer than your inhale, you activate the parasympathetic nervous system.
+        This is because exhalation stimulates the vagus nerve, slowing heart rate and promoting calm.
+      </p>
+      <p>
+        <strong>Box Breathing Variation:</strong>
+      </p>
+      <ul>
+        <li>Inhale for 4 seconds</li>
+        <li>Hold for 4 seconds</li>
+        <li>Exhale for 6-8 seconds</li>
+        <li>Hold for 2 seconds</li>
+        <li>Repeat for 5-10 minutes</li>
+      </ul>
+
+      <h2>The Co-Regulation Principle</h2>
+      <p>
+        Polyvagal Theory emphasizes that humans are wired for co-regulation—we regulate our nervous
+        systems through safe connection with others. Research in 2025 highlights that the ventral
+        vagal complex specifically evolved to facilitate social behavior and physiological flexibility.
+      </p>
+      <p>
+        Practical applications include:
+      </p>
+      <ul>
+        <li>Spending time with calm, regulated individuals</li>
+        <li>Eye contact and facial expressions that signal safety</li>
+        <li>Prosodic (melodic) voice tones that activate the social engagement system</li>
+        <li>Physical touch with trusted individuals</li>
+      </ul>
+
+      <h2>Building Long-Term Resilience</h2>
+      <p>
+        The goal isn't to eliminate stress—it's to build a flexible nervous system that can move
+        fluidly between states and recover quickly. Research from the IE Center for Health and
+        Well-Being emphasizes that "simple practices like mindful breathing, movement-based therapies,
+        and vagus nerve stimulation can enhance parasympathetic activity, reducing stress and
+        improving resilience."
+      </p>
+      <p>
+        Key principles for lasting change:
+      </p>
+      <ul>
+        <li><strong>Consistency over intensity:</strong> Daily 10-minute practices beat occasional hour-long sessions</li>
+        <li><strong>State before story:</strong> Regulate your physiology before trying to change your thoughts</li>
+        <li><strong>Safety signals:</strong> Create environments that signal safety to your nervous system</li>
+        <li><strong>Titration:</strong> Gradually increase exposure to challenges as your capacity grows</li>
+      </ul>
+
+      <h2>Clinical Applications</h2>
+      <p>
+        The 2025 Polyvagal Theory research by Porges demonstrates clinical applications across trauma,
+        neurodevelopmental, affective, and functional domains. Heart-rate variability biofeedback,
+        controlled breathing, and auricular vagal nerve stimulation are now recognized as accessible
+        tools for enhancing vagal tone, improving executive functioning under pressure, and mitigating
+        fatigue and burnout.
+      </p>
+
+      <h2>Conclusion</h2>
+      <p>
+        Your nervous system is not fixed—it's plastic and trainable. By understanding the science of
+        autonomic regulation and applying evidence-based protocols, you can build a more resilient,
+        flexible system that supports both mental health and peak performance. The research is clear:
+        small, consistent practices create measurable changes in your physiology and your life.
+      </p>
+
+      <div class="sources">
+        <h3>Sources</h3>
+        <ul>
+          <li><a href="https://www.frontiersin.org/journals/behavioral-neuroscience/articles/10.3389/fnbeh.2025.1659083/full" target="_blank" rel="noopener noreferrer">Polyvagal Theory: Evolution, Engagement, and Clinical Observation - Frontiers in Behavioral Neuroscience (2025)</a></li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12302812/" target="_blank" rel="noopener noreferrer">Polyvagal Theory: Current Status, Clinical Applications, and Future Directions - PMC (2025)</a></li>
+          <li><a href="https://www.hubermanlab.com/nsdr" target="_blank" rel="noopener noreferrer">Non-Sleep Deep Rest (NSDR) - Huberman Lab</a></li>
+          <li><a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2025.1639866/full" target="_blank" rel="noopener noreferrer">The vagus nerve: a cornerstone for mental health and performance - Frontiers in Psychology (2025)</a></li>
+          <li><a href="https://www.ie.edu/center-for-health-and-well-being/blog/neuroscience-of-safety-how-polyvagal-theory-reshapes-well-being/" target="_blank" rel="noopener noreferrer">Neuroscience of Safety: How Polyvagal Theory Reshapes Well-Being - IE University</a></li>
+        </ul>
+      </div>
+    `,
+    contentFr: `
+      <p class="lead">
+        Votre systeme nerveux est le centre de controle principal de votre etat mental et physique.
+        Lorsqu'il est dysregule, vous ressentez de l'anxiete, du stress chronique et une surcharge
+        emotionnelle. La bonne nouvelle des recherches en neurosciences de 2025 : vous pouvez
+        entrainer activement votre systeme nerveux pour trouver le calme et construire la resilience.
+      </p>
+
+      <h2>Comprendre Votre Systeme Nerveux Autonome</h2>
+      <p>
+        La theorie polyvagale du Dr Stephen Porges, mise a jour dans sa publication de 2025 dans
+        <em>Frontiers in Behavioral Neuroscience</em>, fournit le cadre le plus complet pour
+        comprendre comment notre systeme nerveux regule nos etats emotionnels. Selon Porges,
+        nous fonctionnons dans trois etats principaux :
+      </p>
+      <ul>
+        <li><strong>Vagal Ventral (Sur et Social) :</strong> Vous vous sentez connecte, calme et engage. Votre rythme cardiaque est regule et vous pouvez penser clairement.</li>
+        <li><strong>Sympathique (Combat ou Fuite) :</strong> Votre corps se prepare a l'action. Le rythme cardiaque augmente et votre concentration se restreint aux menaces percues.</li>
+        <li><strong>Vagal Dorsal (Arret) :</strong> Lorsque vous etes submerge, le corps conserve l'energie par l'immobilisation, la dissociation ou l'engourdissement.</li>
+      </ul>
+
+      <h2>Le Nerf Vague : Votre Systeme de Calme Integre</h2>
+      <p>
+        Le nerf vague est le plus long nerf cranien de votre corps, allant du tronc cerebral
+        a travers votre visage, gorge, coeur, poumons et intestin. C'est la voie principale
+        du systeme nerveux parasympathique.
+      </p>
+      <p>
+        Une etude de 2025 publiee dans <em>Frontiers in Psychology</em> a confirme que la
+        stimulation du nerf vague aide a traiter le TSPT, les maladies auto-immunes, l'epilepsie
+        et meme le diabete.
+      </p>
+
+      <h2>Mesurer l'Etat de Votre Systeme Nerveux</h2>
+      <p>
+        La recherche moderne a identifie des biomarqueurs objectifs :
+      </p>
+      <ul>
+        <li><strong>Variabilite de la Frequence Cardiaque (VFC) :</strong> Une VFC plus elevee indique une meilleure flexibilite autonome</li>
+        <li><strong>Arythmie Sinusale Respiratoire (ASR) :</strong> Un marqueur du tonus vagal</li>
+        <li><strong>Efficacite Vagale :</strong> L'efficacite avec laquelle votre nerf vague module votre rythme cardiaque</li>
+      </ul>
+
+      <h2>Protocole 1 : Repos Profond Sans Sommeil (NSDR)</h2>
+      <p>
+        Le neuroscientifique de Stanford, le Dr Andrew Huberman, a developpe le terme NSDR pour
+        les pratiques qui induisent une relaxation profonde sans sommeil. Le NSDR active le
+        systeme nerveux parasympathique, reduit le cortisol et ameliore la neuroplasticite.
+      </p>
+      <p>
+        <strong>Comment Pratiquer :</strong>
+      </p>
+      <ul>
+        <li>Allongez-vous dans une position confortable dans un espace calme</li>
+        <li>Fermez les yeux et ecoutez un enregistrement NSDR guide</li>
+        <li>Suivez le scan corporel guide et les instructions de respiration</li>
+        <li>Pratiquez 10 a 30 minutes par jour</li>
+      </ul>
+
+      <h2>Protocole 2 : Le Soupir Physiologique</h2>
+      <p>
+        Le moyen le plus rapide de calmer votre systeme nerveux en temps reel est le soupir
+        physiologique—un modele de respiration recemment valide par la recherche de Stanford.
+      </p>
+      <p>
+        <strong>Comment Pratiquer :</strong>
+      </p>
+      <ul>
+        <li>Inspirez completement par le nez</li>
+        <li>Au sommet de l'inspiration, prenez une seconde inspiration plus courte</li>
+        <li>Expirez longuement et lentement par la bouche</li>
+        <li>Repetez 1 a 3 fois selon les besoins</li>
+      </ul>
+
+      <h2>Protocole 3 : Exposition au Froid</h2>
+      <p>
+        Une breve exposition au froid declenche le "reflexe de plongee"—une reponse automatique
+        qui active le systeme nerveux parasympathique.
+      </p>
+      <p>
+        <strong>Comment Pratiquer :</strong>
+      </p>
+      <ul>
+        <li>Commencez par 30 a 60 secondes d'eau froide a la fin de votre douche</li>
+        <li>Concentrez-vous sur une respiration lente et controlee</li>
+        <li>Augmentez progressivement la duree (1 a 3 minutes suffisent)</li>
+        <li>Pratiquez 2 a 4 fois par semaine</li>
+      </ul>
+
+      <h2>Protocole 4 : Respiration avec Expiration Prolongee</h2>
+      <p>
+        Lorsque votre expiration est plus longue que votre inspiration, vous activez le systeme
+        nerveux parasympathique.
+      </p>
+      <p>
+        <strong>Variation de la Respiration en Carre :</strong>
+      </p>
+      <ul>
+        <li>Inspirez pendant 4 secondes</li>
+        <li>Retenez pendant 4 secondes</li>
+        <li>Expirez pendant 6 a 8 secondes</li>
+        <li>Retenez pendant 2 secondes</li>
+        <li>Repetez pendant 5 a 10 minutes</li>
+      </ul>
+
+      <h2>Le Principe de Co-Regulation</h2>
+      <p>
+        La theorie polyvagale souligne que les humains sont cables pour la co-regulation—nous
+        regulons nos systemes nerveux par une connexion securisee avec les autres.
+      </p>
+      <ul>
+        <li>Passer du temps avec des personnes calmes et regulees</li>
+        <li>Contact visuel et expressions faciales qui signalent la securite</li>
+        <li>Tons de voix prosodiques qui activent le systeme d'engagement social</li>
+        <li>Toucher physique avec des personnes de confiance</li>
+      </ul>
+
+      <h2>Construire une Resilience a Long Terme</h2>
+      <p>
+        L'objectif n'est pas d'eliminer le stress—c'est de construire un systeme nerveux flexible
+        qui peut se deplacer fluidement entre les etats et recuperer rapidement.
+      </p>
+      <ul>
+        <li><strong>Coherence plutot qu'intensite :</strong> Des pratiques quotidiennes de 10 minutes battent des sessions occasionnelles d'une heure</li>
+        <li><strong>L'etat avant l'histoire :</strong> Regulez votre physiologie avant d'essayer de changer vos pensees</li>
+        <li><strong>Signaux de securite :</strong> Creez des environnements qui signalent la securite a votre systeme nerveux</li>
+        <li><strong>Titration :</strong> Augmentez progressivement l'exposition aux defis a mesure que votre capacite grandit</li>
+      </ul>
+
+      <h2>Conclusion</h2>
+      <p>
+        Votre systeme nerveux n'est pas fixe—il est plastique et entrainable. En comprenant
+        la science de la regulation autonome et en appliquant des protocoles fondes sur les
+        preuves, vous pouvez construire un systeme plus resilient et flexible qui soutient
+        a la fois la sante mentale et la performance optimale.
+      </p>
+
+      <div class="sources">
+        <h3>Sources</h3>
+        <ul>
+          <li><a href="https://www.frontiersin.org/journals/behavioral-neuroscience/articles/10.3389/fnbeh.2025.1659083/full" target="_blank" rel="noopener noreferrer">Polyvagal Theory: Evolution, Engagement, and Clinical Observation - Frontiers in Behavioral Neuroscience (2025)</a></li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12302812/" target="_blank" rel="noopener noreferrer">Polyvagal Theory: Current Status, Clinical Applications, and Future Directions - PMC (2025)</a></li>
+          <li><a href="https://www.hubermanlab.com/nsdr" target="_blank" rel="noopener noreferrer">Non-Sleep Deep Rest (NSDR) - Huberman Lab</a></li>
+          <li><a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2025.1639866/full" target="_blank" rel="noopener noreferrer">The vagus nerve: a cornerstone for mental health and performance - Frontiers in Psychology (2025)</a></li>
+          <li><a href="https://www.ie.edu/center-for-health-and-well-being/blog/neuroscience-of-safety-how-polyvagal-theory-reshapes-well-being/" target="_blank" rel="noopener noreferrer">Neuroscience of Safety: How Polyvagal Theory Reshapes Well-Being - IE University</a></li>
+        </ul>
+      </div>
+    `,
+  },
   {
     slug: 'emdr-science',
     titleEn: 'EMDR Therapy: The Science Behind Eye Movement and Trauma Healing',
@@ -25,6 +392,20 @@ export const articles: BlogArticle[] = [
     category: 'Research',
     readTime: 8,
     date: '2024-12-15',
+    keywords: [
+      'EMDR therapy',
+      'eye movement desensitization',
+      'trauma healing',
+      'PTSD treatment',
+      'trauma therapy',
+      'bilateral stimulation',
+      'evidence-based therapy',
+      'WHO recommended therapy',
+      'trauma recovery',
+      'anxiety treatment',
+      'depression therapy',
+      'mental health treatment',
+    ],
     contentEn: `
       <p class="lead">
         Eye Movement Desensitization and Reprocessing (EMDR) has emerged as one of the most thoroughly
@@ -190,6 +571,18 @@ export const articles: BlogArticle[] = [
     category: 'Innovation',
     readTime: 7,
     date: '2024-12-10',
+    keywords: [
+      'flash technique',
+      'trauma processing',
+      'gentle trauma therapy',
+      'PTSD treatment',
+      'trauma recovery',
+      'positive imagery therapy',
+      'EMDR alternative',
+      'low-distress therapy',
+      'trauma treatment research',
+      'rapid trauma relief',
+    ],
     contentEn: `
       <p class="lead">
         The Flash Technique (FT) represents an innovative approach to trauma treatment that allows
@@ -366,6 +759,20 @@ export const articles: BlogArticle[] = [
     category: 'Neuroscience',
     readTime: 9,
     date: '2024-12-05',
+    keywords: [
+      'neuroplasticity',
+      'brain healing',
+      'trauma recovery neuroscience',
+      'brain rewiring',
+      'neural plasticity',
+      'PTSD brain changes',
+      'hippocampus trauma',
+      'amygdala regulation',
+      'prefrontal cortex healing',
+      'mindfulness neuroplasticity',
+      'rTMS therapy',
+      'brain can heal',
+    ],
     contentEn: `
       <p class="lead">
         The discovery that the adult brain can change and adapt throughout life has revolutionized

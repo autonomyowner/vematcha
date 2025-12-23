@@ -32,14 +32,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${article.titleEn} | Matcha Blog`,
     description: article.descriptionEn,
-    keywords: [
-      article.category.toLowerCase(),
-      'mental health',
-      'trauma therapy',
-      'EMDR',
-      'psychology',
-      'wellness',
-    ],
+    keywords: article.keywords,
     authors: [{ name: 'Matcha' }],
     openGraph: {
       title: article.titleEn,
@@ -94,9 +87,76 @@ export default async function ArticlePage({ params }: PageProps) {
       '@id': `${baseUrl}/blog/${article.slug}`,
     },
     articleSection: article.category,
-    wordCount: article.readTime * 200, // Approximate based on read time
+    wordCount: article.readTime * 200,
     inLanguage: 'en',
+    keywords: article.keywords.join(', '),
   };
+
+  // FAQ Schema for featured snippets (article-specific)
+  const faqSchemas: Record<string, object> = {
+    'nervous-system-regulation': {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'What is nervous system regulation?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Nervous system regulation refers to the ability to move between different autonomic states (calm, alert, shutdown) and return to a balanced state. It involves the vagus nerve, parasympathetic nervous system, and practices like breathing exercises, NSDR, and cold exposure.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'What is NSDR (Non-Sleep Deep Rest)?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'NSDR is a term coined by Dr. Andrew Huberman for practices that induce deep relaxation without sleep, including yoga nidra. It activates the parasympathetic nervous system, reduces cortisol, restores dopamine levels, and enhances neuroplasticity. Practice 10-30 minutes daily.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'How do you stimulate the vagus nerve naturally?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'You can stimulate the vagus nerve through: physiological sighing (double inhale + long exhale), cold exposure, slow exhale breathing, humming, singing, and social connection. These activate the parasympathetic nervous system and promote calm.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'What is Polyvagal Theory?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Polyvagal Theory, developed by Dr. Stephen Porges, explains how the autonomic nervous system operates in three states: ventral vagal (safe/social), sympathetic (fight/flight), and dorsal vagal (shutdown). Understanding these states helps explain stress responses and guides healing interventions.',
+          },
+        },
+      ],
+    },
+    'emdr-science': {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'What is EMDR therapy?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'EMDR (Eye Movement Desensitization and Reprocessing) is an evidence-based psychotherapy for trauma. It involves recalling distressing experiences while receiving bilateral stimulation through guided eye movements, helping the brain reprocess traumatic memories.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Is EMDR scientifically proven?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Yes, EMDR is backed by over 30 randomized controlled trials and is recommended as a first-line PTSD treatment by the WHO, American Psychological Association, and VA/DoD. A 2024 meta-analysis found it equally effective as other top-tier trauma therapies.',
+          },
+        },
+      ],
+    },
+  };
+
+  const faqSchema = faqSchemas[article.slug];
 
   return (
     <>
@@ -104,6 +164,12 @@ export default async function ArticlePage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       <div className="min-h-screen" style={{ background: 'var(--cream-50)' }}>
         <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
           <Link
