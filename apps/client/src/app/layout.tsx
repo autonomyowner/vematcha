@@ -54,21 +54,12 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://vematcha.xyz",
     siteName: "Matcha",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Matcha - AI-Powered Psychological Insights",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Matcha - AI-Powered Psychological Insights",
     description:
       "Understand your mind with AI. Detect cognitive biases and get personalized insights.",
-    images: ["/og-image.png"],
   },
   robots: {
     index: true,
