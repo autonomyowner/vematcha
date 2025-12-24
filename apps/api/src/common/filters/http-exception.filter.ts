@@ -21,6 +21,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
     let message = 'Internal server error';
     let error = 'Internal Server Error';
 
+    // Preserve custom properties from exception response
+    let customProps: Record<string, unknown> = {};
+
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
@@ -31,6 +34,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const responseObj = exceptionResponse as Record<string, unknown>;
         message = (responseObj.message as string) || message;
         error = (responseObj.error as string) || exception.name;
+
+        // Preserve custom properties (code, limit, upgradeUrl, etc.)
+        const { message: _m, error: _e, statusCode: _s, ...rest } = responseObj;
+        customProps = rest;
       }
     } else if (exception instanceof Error) {
       message = exception.message;
@@ -48,6 +55,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       statusCode: status,
       error,
       message,
+      ...customProps,
       timestamp: new Date().toISOString(),
       path: request.url,
     });
