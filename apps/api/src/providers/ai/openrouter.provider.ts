@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { AIProvider, AnalysisResult } from './ai.types';
 
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant';
@@ -68,7 +69,7 @@ export interface ModelTierContext {
 }
 
 @Injectable()
-export class OpenRouterProvider {
+export class OpenRouterProvider implements AIProvider {
   private readonly logger = new Logger(OpenRouterProvider.name);
   private readonly apiKey: string;
   private readonly model: string;
@@ -308,6 +309,68 @@ export class OpenRouterProvider {
 
   isConfigured(): boolean {
     return !!this.apiKey;
+  }
+
+  /**
+   * Analyze text for cognitive biases, thinking patterns, and emotional state
+   * Implements AIProvider interface for queue processor
+   */
+  async analyze(inputText: string): Promise<AnalysisResult> {
+    if (!this.apiKey) {
+      throw new Error('OpenRouter API key not configured');
+    }
+
+    this.logger.log('Starting AI analysis...');
+
+    const systemPrompt = `You are a cognitive psychology expert. Analyze the following text and return a JSON object with:
+- biases: array of {name: string, intensity: number (0-100), description: string} - cognitive biases detected
+- patterns: array of {name: string, percentage: number (0-100)} - thinking patterns, must sum to 100
+- insights: array of strings - 3-4 actionable insights about the person's thinking
+- emotionalState: {primary: string, secondary?: string, intensity: "low"|"moderate"|"high"}
+
+Be thorough but concise. Return ONLY valid JSON.`;
+
+    const response = await fetch(`${this.baseUrl}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': this.configService.get<string>('frontendUrl') || 'http://localhost:3000',
+        'X-Title': 'Matcha AI Analysis',
+      },
+      body: JSON.stringify({
+        model: this.fastModel,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: inputText },
+        ],
+        response_format: { type: 'json_object' },
+        temperature: 0.3,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      this.logger.error(`OpenRouter API error: ${error}`);
+      throw new Error(`OpenRouter API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const content = data.choices[0]?.message?.content || '{}';
+
+    try {
+      const parsed = JSON.parse(content);
+      this.logger.log('AI analysis complete');
+      return {
+        biases: parsed.biases || [],
+        patterns: parsed.patterns || [],
+        insights: parsed.insights || [],
+        emotionalState: parsed.emotionalState || { primary: 'neutral', intensity: 'low' },
+      };
+    } catch (e) {
+      this.logger.error('Failed to parse analysis response');
+      throw new Error('Failed to parse AI analysis response');
+    }
   }
 
   /**
