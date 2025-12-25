@@ -590,45 +590,6 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Investor CTA */}
-          <div
-            className="mt-10 pt-8 border-t"
-            style={{ borderColor: 'var(--border-soft)' }}
-          >
-            <div
-              className="max-w-md mx-auto text-center p-6 rounded-2xl"
-              style={{
-                background: 'linear-gradient(135deg, var(--cream-100) 0%, var(--cream-200) 100%)',
-                border: '1px solid var(--matcha-200)',
-              }}
-            >
-              <p
-                className="text-sm font-medium mb-2"
-                style={{ color: 'var(--matcha-700)' }}
-              >
-                {t.landing.investorCta}
-              </p>
-              <p
-                className="text-sm mb-4"
-                style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}
-              >
-                {t.landing.investorMsg}
-              </p>
-              <a
-                href="https://wa.me/213797339451"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block text-sm font-medium px-5 py-2 rounded-lg transition-all hover:opacity-90"
-                style={{
-                  background: 'var(--matcha-600)',
-                  color: 'white',
-                }}
-              >
-                {t.landing.investorContact}
-              </a>
-            </div>
-          </div>
-
           <div
             className="mt-8 pt-8 border-t text-center text-sm"
             style={{

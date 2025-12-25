@@ -9,10 +9,10 @@ export default function PricingPage() {
   const { t, language } = useLanguage();
 
   const currency = language === 'en' ? '$' : '€';
-  const monthlyPrice = language === 'en' ? '15' : '15';
-  const yearlyPrice = language === 'en' ? '12' : '12';
-  const yearlyTotal = language === 'en' ? '144' : '144';
-  const yearlySavings = language === 'en' ? '36' : '36';
+  const monthlyPrice = language === 'en' ? '19' : '19';
+  const yearlyPrice = language === 'en' ? '15' : '15';
+  const yearlyTotal = language === 'en' ? '180' : '180';
+  const yearlySavings = language === 'en' ? '48' : '48';
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--cream-50)' }}>
@@ -113,8 +113,8 @@ export default function PricingPage() {
 
       {/* Pricing Cards */}
       <section className="relative pb-24 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6">
             {/* Free Plan */}
             <div
               className="rounded-3xl p-8 relative"
@@ -192,28 +192,17 @@ export default function PricingPage() {
             <div
               className="rounded-3xl p-8 relative"
               style={{
-                background: 'linear-gradient(135deg, var(--matcha-500) 0%, var(--matcha-600) 100%)',
-                boxShadow: '0 20px 60px rgba(104, 166, 125, 0.3)',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border-soft)',
+                boxShadow: 'var(--shadow-md)',
               }}
             >
-              {/* Popular badge */}
-              <div
-                className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full text-sm font-semibold"
-                style={{
-                  background: 'var(--terra-400)',
-                  color: 'white',
-                  boxShadow: '0 4px 12px rgba(224, 123, 76, 0.4)',
-                }}
-              >
-                {t.pricing.mostPopular}
-              </div>
-
               <div className="mb-6">
                 <span
                   className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4"
                   style={{
-                    background: 'rgba(255, 255, 255, 0.2)',
-                    color: 'white',
+                    background: 'var(--matcha-100)',
+                    color: 'var(--matcha-700)',
                   }}
                 >
                   {t.pricing.pro}
@@ -222,25 +211,28 @@ export default function PricingPage() {
                   className="text-2xl mb-2"
                   style={{
                     fontFamily: 'var(--font-dm-serif), Georgia, serif',
-                    color: 'white',
+                    color: 'var(--text-primary)',
                   }}
                 >
                   {t.pricing.transformation}
                 </h2>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-bold text-white">
+                  <span
+                    className="text-4xl font-bold"
+                    style={{ color: 'var(--text-primary)' }}
+                  >
                     {billingPeriod === 'monthly' ? monthlyPrice : yearlyPrice}{currency}
                   </span>
-                  <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>{t.pricing.perMonth}</span>
+                  <span style={{ color: 'var(--text-muted)' }}>{t.pricing.perMonth}</span>
                 </div>
                 {billingPeriod === 'yearly' && (
-                  <p className="text-sm mt-1" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                  <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
                     {t.pricing.billedYearly.replace('{amount}', yearlyTotal + currency).replace('{savings}', yearlySavings + currency)}
                   </p>
                 )}
                 <p
                   className="mt-2 text-sm"
-                  style={{ color: 'rgba(255, 255, 255, 0.85)' }}
+                  style={{ color: 'var(--text-secondary)' }}
                 >
                   {t.pricing.proDesc}
                 </p>
@@ -260,6 +252,92 @@ export default function PricingPage() {
                   <li key={i} className="flex items-start gap-3">
                     <span
                       className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0"
+                      style={{ background: 'var(--matcha-500)' }}
+                    />
+                    <span style={{ color: 'var(--text-secondary)' }}>
+                      {feature}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              <div
+                className="inline-flex w-full items-center justify-center px-6 py-3 rounded-xl font-medium cursor-not-allowed opacity-60"
+                style={{
+                  background: 'var(--cream-200)',
+                  color: 'var(--text-muted)',
+                }}
+              >
+                {language === 'en' ? 'Coming Soon' : 'Bientôt disponible'}
+              </div>
+            </div>
+
+            {/* Founding Member */}
+            <div
+              className="rounded-3xl p-8 relative"
+              style={{
+                background: 'linear-gradient(135deg, var(--matcha-500) 0%, var(--matcha-600) 100%)',
+                boxShadow: '0 20px 60px rgba(104, 166, 125, 0.3)',
+              }}
+            >
+              {/* Most Popular badge */}
+              <div
+                className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full text-sm font-semibold"
+                style={{
+                  background: 'var(--terra-400)',
+                  color: 'white',
+                  boxShadow: '0 4px 12px rgba(224, 123, 76, 0.4)',
+                }}
+              >
+                {t.pricing.mostPopular}
+              </div>
+
+              <div className="mb-6">
+                <span
+                  className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    color: 'white',
+                  }}
+                >
+                  {language === 'en' ? 'Founding Member' : 'Membre Fondateur'}
+                </span>
+                <h2
+                  className="text-2xl mb-2"
+                  style={{
+                    fontFamily: 'var(--font-dm-serif), Georgia, serif',
+                    color: 'white',
+                  }}
+                >
+                  {language === 'en' ? 'Lifetime Access' : 'Accès à Vie'}
+                </h2>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-4xl font-bold text-white">€39</span>
+                  <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                    {language === 'en' ? 'one-time' : 'unique'}
+                  </span>
+                </div>
+                <p
+                  className="mt-2 text-sm"
+                  style={{ color: 'rgba(255, 255, 255, 0.85)' }}
+                >
+                  {language === 'en'
+                    ? "Be one of the first 50 to shape Matcha's future"
+                    : "Soyez parmi les 50 premiers à façonner l'avenir de Matcha"}
+                </p>
+              </div>
+
+              <ul className="space-y-4 mb-8">
+                {[
+                  language === 'en' ? 'Lifetime Pro access' : 'Accès Pro à vie',
+                  language === 'en' ? 'All future features' : 'Toutes les fonctionnalités futures',
+                  language === 'en' ? 'Direct founder access' : 'Accès direct au fondateur',
+                  language === 'en' ? 'Wall of Founders' : 'Mur des Fondateurs',
+                  language === 'en' ? 'Vote on roadmap' : 'Votez sur la roadmap',
+                ].map((feature, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <span
+                      className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0"
                       style={{ background: 'white' }}
                     />
                     <span style={{ color: 'rgba(255, 255, 255, 0.95)' }}>
@@ -269,15 +347,18 @@ export default function PricingPage() {
                 ))}
               </ul>
 
-              <div
-                className="inline-flex w-full items-center justify-center px-6 py-3 rounded-xl font-medium cursor-not-allowed opacity-70"
+              <a
+                href="https://wa.me/213797339451?text=I%20want%20to%20become%20a%20Founding%20Member"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex w-full items-center justify-center px-6 py-3 rounded-xl font-medium transition-all hover:scale-[1.02]"
                 style={{
                   background: 'white',
                   color: 'var(--matcha-700)',
                 }}
               >
-                {language === 'en' ? 'Coming Soon' : 'Bientôt disponible'}
-              </div>
+                {language === 'en' ? 'Only 47 left!' : 'Plus que 47 places !'}
+              </a>
             </div>
           </div>
         </div>
@@ -474,37 +555,6 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="py-20 px-4">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2
-            className="text-3xl mb-4"
-            style={{
-              fontFamily: 'var(--font-dm-serif), Georgia, serif',
-              color: 'var(--text-primary)',
-            }}
-          >
-            {t.pricing.readyToTransform}
-          </h2>
-          <p className="mb-8" style={{ color: 'var(--text-secondary)' }}>
-            {t.pricing.joinThousands}
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link
-              href="/signup"
-              className="matcha-btn matcha-btn-primary text-base px-8 py-4"
-            >
-              {t.pricing.startFree}
-            </Link>
-            <div
-              className="matcha-btn matcha-btn-secondary text-base px-8 py-4 cursor-not-allowed opacity-70"
-            >
-              {language === 'en' ? 'Coming Soon' : 'Bientôt disponible'}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer
         className="py-12 px-4 border-t"
@@ -553,6 +603,45 @@ export default function PricingPage() {
               </Link>
             </div>
           </div>
+          {/* Investor CTA */}
+          <div
+            className="mt-10 pt-8 border-t"
+            style={{ borderColor: 'var(--border-soft)' }}
+          >
+            <div
+              className="max-w-md mx-auto text-center p-6 rounded-2xl"
+              style={{
+                background: 'linear-gradient(135deg, var(--cream-100) 0%, var(--cream-200) 100%)',
+                border: '1px solid var(--matcha-200)',
+              }}
+            >
+              <p
+                className="text-sm font-medium mb-2"
+                style={{ color: 'var(--matcha-700)' }}
+              >
+                {t.landing.investorCta}
+              </p>
+              <p
+                className="text-sm mb-4"
+                style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}
+              >
+                {t.landing.investorMsg}
+              </p>
+              <a
+                href="https://wa.me/213797339451"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block text-sm font-medium px-5 py-2 rounded-lg transition-all hover:opacity-90"
+                style={{
+                  background: 'var(--matcha-600)',
+                  color: 'white',
+                }}
+              >
+                {t.landing.investorContact}
+              </a>
+            </div>
+          </div>
+
           <div
             className="mt-8 pt-8 border-t text-center text-sm"
             style={{

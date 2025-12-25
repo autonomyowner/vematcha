@@ -69,7 +69,7 @@ export const translations = {
 
       // Final CTA
       readyToUnderstand: 'Ready to understand your mind?',
-      joinThousands: 'Join thousands of people who have transformed their way of thinking with Matcha.',
+      joinThousands: 'Start your journey and transform your way of thinking with Matcha.',
       startNow: 'Start now',
 
       // Footer
@@ -188,7 +188,7 @@ export const translations = {
 
       // Final CTA
       readyToTransform: 'Ready to transform your way of thinking?',
-      joinThousands: 'Join thousands of people who have already started their journey with Matcha.',
+      joinThousands: 'Start your journey with Matcha today.',
     },
 
     // Login Page
@@ -215,7 +215,7 @@ export const translations = {
       choosePlan: 'Choose your plan',
       free: 'Free',
       freeDesc: '3 analyses/month',
-      proPrice: 'Pro - $15/month',
+      proPrice: 'Pro - $19/month',
       proDesc: 'Unlimited analyses',
       freeTrial: '14 days free',
       firstName: 'First name',
@@ -401,7 +401,7 @@ export const translations = {
 
       // Final CTA
       readyToUnderstand: 'Pret a comprendre votre esprit ?',
-      joinThousands: 'Rejoignez des milliers de personnes qui ont transforme leur facon de penser grace a Matcha.',
+      joinThousands: 'Commencez votre voyage et transformez votre façon de penser avec Matcha.',
       startNow: 'Commencer maintenant',
 
       // Footer
@@ -520,7 +520,7 @@ export const translations = {
 
       // Final CTA
       readyToTransform: 'Pret a transformer votre facon de penser ?',
-      joinThousands: 'Rejoignez des milliers de personnes qui ont deja commence leur voyage avec Matcha.',
+      joinThousands: 'Commencez votre voyage avec Matcha dès aujourd\'hui.',
     },
 
     // Login Page
@@ -547,7 +547,7 @@ export const translations = {
       choosePlan: 'Choisissez votre plan',
       free: 'Gratuit',
       freeDesc: '3 analyses/mois',
-      proPrice: 'Pro - 15€/mois',
+      proPrice: 'Pro - 19€/mois',
       proDesc: 'Analyses illimitees',
       freeTrial: '14j gratuit',
       firstName: 'Prenom',
