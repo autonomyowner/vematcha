@@ -32,14 +32,24 @@ export default function TermsPage() {
           <section>
             <h2 className="font-serif text-2xl text-warm-900 mt-8 mb-4">2. Description of Service</h2>
             <p>
-              Matcha is an AI-powered wellness companion that provides conversational support, psychological
-              insights, and guided relaxation techniques. The Service is designed for personal growth and
-              self-reflection purposes.
+              Matcha is an AI-powered companion designed for personal wellness, self-reflection, and
+              relaxation. The Service provides conversational support, guided breathing exercises, and
+              tools for self-discovery and emotional exploration.
             </p>
+            <div className="mt-4 p-4 bg-red-50 rounded-lg border border-red-200">
+              <p className="font-semibold text-red-800 mb-2">Important Medical Disclaimer:</p>
+              <ul className="list-disc pl-6 space-y-2 text-red-700">
+                <li>Matcha is <strong>NOT</strong> a medical device, therapy, or healthcare service</li>
+                <li>Matcha does <strong>NOT</strong> diagnose, treat, cure, or prevent any disease or mental health condition</li>
+                <li>Matcha is <strong>NOT</strong> a substitute for professional medical advice, diagnosis, or treatment</li>
+                <li>The AI companion is for <strong>entertainment, self-reflection, and personal growth purposes only</strong></li>
+                <li>Always seek the advice of a qualified healthcare provider with any questions regarding a medical or mental health condition</li>
+              </ul>
+            </div>
             <p className="mt-4 p-4 bg-warm-100 rounded-lg border border-warm-200">
-              <strong>Important:</strong> Matcha is not a substitute for professional mental health care.
-              If you are experiencing a mental health crisis, please contact a licensed healthcare provider
-              or emergency services immediately.
+              <strong>Crisis Resources:</strong> If you are experiencing a mental health crisis or having
+              thoughts of self-harm, please contact emergency services (911), the National Suicide Prevention
+              Lifeline (988), or go to your nearest emergency room immediately.
             </p>
           </section>
 

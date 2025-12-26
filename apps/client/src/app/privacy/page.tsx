@@ -25,7 +25,8 @@ export default function PrivacyPage() {
             <h2 className="font-serif text-2xl text-warm-900 mt-8 mb-4">1. Introduction</h2>
             <p>
               At Matcha, we take your privacy seriously. This Privacy Policy explains how we collect, use,
-              disclose, and safeguard your information when you use our AI wellness companion service.
+              disclose, and safeguard your information when you use our AI wellness companion service,
+              including our website and mobile applications (iOS and Android).
             </p>
           </section>
 
@@ -41,9 +42,21 @@ export default function PrivacyPage() {
               <li>Payment information (processed securely by our payment provider)</li>
             </ul>
 
+            <h3 className="font-semibold text-lg text-warm-800 mt-6 mb-2">Voice and Audio Data</h3>
+            <p>
+              Our mobile app offers voice therapy sessions that require microphone access. When you use voice features:
+            </p>
+            <ul className="list-disc pl-6 mt-2 space-y-2">
+              <li>Audio is processed in real-time to enable conversation with our AI companion</li>
+              <li>Voice data is transmitted securely to our AI processing partners for speech-to-text conversion</li>
+              <li>We do not permanently store raw audio recordings</li>
+              <li>Transcribed text from voice sessions is stored as conversation data (see below)</li>
+              <li>You can use the app without voice features by denying microphone permission</li>
+            </ul>
+
             <h3 className="font-semibold text-lg text-warm-800 mt-6 mb-2">Conversation Data</h3>
             <p>
-              To provide our service, we store your conversations with Matcha. This data is used to:
+              To provide our service, we store your conversations with Matcha (both text and transcribed voice). This data is used to:
             </p>
             <ul className="list-disc pl-6 mt-2 space-y-2">
               <li>Provide personalized insights and analysis</li>
@@ -51,10 +64,24 @@ export default function PrivacyPage() {
               <li>Improve the quality of our AI responses</li>
             </ul>
 
-            <h3 className="font-semibold text-lg text-warm-800 mt-6 mb-2">Usage Data</h3>
+            <h3 className="font-semibold text-lg text-warm-800 mt-6 mb-2">Device and Usage Data</h3>
             <p>
               We automatically collect certain information about your device and how you interact with
-              our Service, including IP address, browser type, pages visited, and time spent on pages.
+              our Service, including:
+            </p>
+            <ul className="list-disc pl-6 mt-2 space-y-2">
+              <li>Device type, operating system, and version</li>
+              <li>Unique device identifiers</li>
+              <li>IP address and general location (country/region)</li>
+              <li>App version and usage statistics</li>
+              <li>Crash logs and performance data</li>
+              <li>Pages visited and time spent on pages</li>
+            </ul>
+
+            <h3 className="font-semibold text-lg text-warm-800 mt-6 mb-2">Push Notifications</h3>
+            <p>
+              If you enable push notifications, we collect your device token to send you reminders and updates.
+              You can disable notifications at any time through your device settings.
             </p>
           </section>
 
@@ -94,13 +121,39 @@ export default function PrivacyPage() {
           </section>
 
           <section>
+            <h2 className="font-serif text-2xl text-warm-900 mt-8 mb-4">5.1 Mobile App Permissions</h2>
+            <p>Our mobile application may request the following permissions:</p>
+            <ul className="list-disc pl-6 mt-2 space-y-2">
+              <li>
+                <strong>Microphone:</strong> Required for voice therapy sessions. Audio is processed in real-time
+                and is not stored on your device or our servers. You can use text-based features without granting
+                this permission.
+              </li>
+              <li>
+                <strong>Internet:</strong> Required for all app functionality, including AI conversations and
+                account synchronization.
+              </li>
+              <li>
+                <strong>Notifications:</strong> Optional. Used to send session reminders and wellness check-ins.
+                You can manage notification preferences in your device settings.
+              </li>
+            </ul>
+            <p className="mt-4">
+              You can revoke any permission at any time through your device settings. Some features may not
+              work without the required permissions.
+            </p>
+          </section>
+
+          <section>
             <h2 className="font-serif text-2xl text-warm-900 mt-8 mb-4">6. Third-Party Services</h2>
             <p>We use trusted third-party services to operate our platform:</p>
             <ul className="list-disc pl-6 mt-2 space-y-2">
               <li><strong>Authentication:</strong> Clerk (secure user authentication)</li>
               <li><strong>Payments:</strong> Stripe (payment processing)</li>
               <li><strong>AI Processing:</strong> OpenRouter/Anthropic (conversation AI)</li>
+              <li><strong>Voice Processing:</strong> Vapi/Daily.co (real-time voice AI for therapy sessions)</li>
               <li><strong>Hosting:</strong> Render, Vercel (cloud infrastructure)</li>
+              <li><strong>Analytics:</strong> Expo (mobile app analytics and crash reporting)</li>
             </ul>
             <p className="mt-4">
               These providers have their own privacy policies and are contractually obligated to protect
@@ -135,6 +188,45 @@ export default function PrivacyPage() {
               Your information may be transferred to and processed in countries other than your own.
               We ensure appropriate safeguards are in place to protect your information in accordance
               with this Privacy Policy.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="font-serif text-2xl text-warm-900 mt-8 mb-4">9.1 California Privacy Rights (CCPA)</h2>
+            <p>
+              If you are a California resident, you have specific rights regarding your personal information:
+            </p>
+            <ul className="list-disc pl-6 mt-2 space-y-2">
+              <li>The right to know what personal information we collect and how it is used</li>
+              <li>The right to request deletion of your personal information</li>
+              <li>The right to opt-out of the sale of personal information (we do not sell your data)</li>
+              <li>The right to non-discrimination for exercising your privacy rights</li>
+            </ul>
+            <p className="mt-4">
+              To exercise these rights, please contact us at{' '}
+              <a href="mailto:privacy@matcha.ai" className="text-matcha-600 hover:underline">
+                privacy@matcha.ai
+              </a>
+            </p>
+          </section>
+
+          <section>
+            <h2 className="font-serif text-2xl text-warm-900 mt-8 mb-4">9.2 European Privacy Rights (GDPR)</h2>
+            <p>
+              If you are located in the European Economic Area (EEA), you have additional rights under GDPR:
+            </p>
+            <ul className="list-disc pl-6 mt-2 space-y-2">
+              <li>Right to access your personal data</li>
+              <li>Right to rectification of inaccurate data</li>
+              <li>Right to erasure ("right to be forgotten")</li>
+              <li>Right to restrict processing</li>
+              <li>Right to data portability</li>
+              <li>Right to object to processing</li>
+              <li>Rights related to automated decision-making</li>
+            </ul>
+            <p className="mt-4">
+              Our legal basis for processing your data includes: your consent, performance of a contract,
+              and our legitimate interests in providing and improving our services.
             </p>
           </section>
 

@@ -18,20 +18,26 @@ const SLIDES: OnboardingSlide[] = [
   {
     id: '1',
     title: 'Welcome to Matcha',
-    description: 'Your AI companion for mental wellness. Process thoughts, understand emotions, and build healthier thinking patterns.',
+    description: 'Your AI companion for self-discovery and personal growth. Explore your thoughts, reflect on emotions, and build mindful habits.',
     color: '#5a9470',
   },
   {
     id: '2',
     title: 'Talk Freely',
-    description: 'Share what\'s on your mind without judgment. Our AI listens, understands, and helps you gain clarity.',
+    description: 'Share what\'s on your mind in a judgment-free space. Our AI companion listens and helps you gain clarity through reflection.',
     color: '#6b9ac4',
   },
   {
     id: '3',
     title: 'Track Your Journey',
-    description: 'Monitor your mood, build healthy streaks, and see your emotional patterns over time.',
+    description: 'Monitor your mood, build healthy streaks, and discover your emotional patterns over time.',
     color: '#c97d52',
+  },
+  {
+    id: '4',
+    title: 'Not a Replacement for Care',
+    description: 'Matcha is for self-reflection and entertainment only. It does not provide medical advice, diagnosis, or treatment. Always consult a healthcare professional for mental health concerns.',
+    color: '#a69889',
   },
 ];
 
@@ -42,14 +48,14 @@ interface Goal {
 }
 
 const GOALS: Goal[] = [
-  { id: 'anxiety', label: 'Manage Anxiety', description: 'Reduce worry and stress' },
-  { id: 'depression', label: 'Lift My Mood', description: 'Work through low feelings' },
-  { id: 'stress', label: 'Handle Stress', description: 'Better cope with pressure' },
-  { id: 'sleep', label: 'Sleep Better', description: 'Improve rest and relaxation' },
-  { id: 'relationships', label: 'Relationships', description: 'Navigate social challenges' },
+  { id: 'anxiety', label: 'Explore Worries', description: 'Reflect on anxious thoughts' },
+  { id: 'mood', label: 'Mood Journaling', description: 'Track and understand feelings' },
+  { id: 'stress', label: 'Stress Relief', description: 'Relaxation and breathing' },
+  { id: 'sleep', label: 'Wind Down', description: 'Evening relaxation routines' },
+  { id: 'relationships', label: 'Relationships', description: 'Reflect on connections' },
   { id: 'self-discovery', label: 'Know Myself', description: 'Explore thoughts and feelings' },
-  { id: 'trauma', label: 'Process Trauma', description: 'Work through difficult memories' },
-  { id: 'growth', label: 'Personal Growth', description: 'Become my best self' },
+  { id: 'mindfulness', label: 'Mindfulness', description: 'Present moment awareness' },
+  { id: 'growth', label: 'Personal Growth', description: 'Self-improvement reflections' },
 ];
 
 function SlideItem({ item }: { item: OnboardingSlide }) {
@@ -65,7 +71,7 @@ function SlideItem({ item }: { item: OnboardingSlide }) {
         marginBottom: 32,
       }}>
         <Ionicons
-          name={item.id === '1' ? 'leaf' : item.id === '2' ? 'chatbubbles' : 'analytics'}
+          name={item.id === '1' ? 'leaf' : item.id === '2' ? 'chatbubbles' : item.id === '3' ? 'analytics' : 'information-circle'}
           size={56}
           color="white"
         />

@@ -7,6 +7,8 @@
     "scheme": "matcha",
     "userInterfaceStyle": "light",
     "splash": {
+      "image": "./assets/icon.png",
+      "resizeMode": "contain",
       "backgroundColor": "#5a9470"
     },
     "assetBundlePatterns": [
@@ -29,7 +31,8 @@
       "useNextNotificationsApi": true,
       "permissions": [
         "android.permission.RECORD_AUDIO"
-      ]
+      ],
+      "privacyPolicyUrl": "https://www.vematcha.xyz/privacy"
     },
     "web": {
       "bundler": "metro",
@@ -52,7 +55,7 @@
         {
           "android": {
             "minSdkVersion": 24,
-            "compileSdkVersion": 34,
+            "compileSdkVersion": 35,
             "targetSdkVersion": 34
           },
           "ios": {
@@ -73,8 +76,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "1211e16f-59d3-45fe-8f57-63320bcc4039"
+        "projectId": "46a62da5-8329-4bb7-86b0-1e2bb1f8b7e2"
       }
-    }
+    },
+    "owner": "autonomy"
   }
 }

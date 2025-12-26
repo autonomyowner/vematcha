@@ -172,14 +172,22 @@ function QuickActions() {
         </TouchableOpacity>
         <TouchableOpacity
           style={{ flex: 1, backgroundColor: '#dcedde', borderRadius: 12, paddingVertical: 16 }}
-          onPress={() => router.push('/flash-session')}
+          onPress={() => router.push('/voice-session')}
         >
           <Text style={{ color: '#3d654c', fontWeight: '600', textAlign: 'center' }}>
-            Flash Session
+            Voice Session
           </Text>
         </TouchableOpacity>
       </View>
-      <View style={{ flexDirection: 'row', gap: 12 }}>
+      <View style={{ flexDirection: 'row', gap: 12, marginBottom: 12 }}>
+        <TouchableOpacity
+          style={{ flex: 1, backgroundColor: '#f0f7f1', borderRadius: 12, paddingVertical: 16, borderWidth: 1, borderColor: '#dcedde' }}
+          onPress={() => router.push('/flash-session')}
+        >
+          <Text style={{ color: '#4a7c5d', fontWeight: '600', textAlign: 'center' }}>
+            Flash Session
+          </Text>
+        </TouchableOpacity>
         <TouchableOpacity
           style={{ flex: 1, backgroundColor: '#fff8f0', borderRadius: 12, paddingVertical: 16, borderWidth: 1, borderColor: '#f5ebe0' }}
           onPress={() => router.push('/breathing')}
@@ -188,6 +196,8 @@ function QuickActions() {
             Breathe
           </Text>
         </TouchableOpacity>
+      </View>
+      <View style={{ flexDirection: 'row', gap: 12 }}>
         <TouchableOpacity
           style={{ flex: 1, backgroundColor: '#fff8f0', borderRadius: 12, paddingVertical: 16, borderWidth: 1, borderColor: '#f5ebe0' }}
           onPress={() => router.push('/crisis')}
@@ -246,7 +256,7 @@ export default function DashboardScreen() {
             Welcome to Matcha
           </Text>
           <Text style={{ color: '#a69889', marginTop: 4 }}>
-            AI at the service of your mind
+            Your companion for self-reflection
           </Text>
         </View>
 
@@ -261,6 +271,19 @@ export default function DashboardScreen() {
 
         {/* Journey Stats */}
         <InsightsCard />
+
+        {/* Disclaimer */}
+        <Text style={{
+          color: '#c4b8ac',
+          fontSize: 11,
+          textAlign: 'center',
+          marginTop: 8,
+          marginBottom: 24,
+          paddingHorizontal: 16,
+          lineHeight: 16,
+        }}>
+          Matcha is for self-reflection and entertainment only. Not a substitute for professional care.
+        </Text>
       </ScrollView>
     </View>
   );
