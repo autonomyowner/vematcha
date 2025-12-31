@@ -1,38 +1,51 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AIProvider, AnalysisResult, CognitiveBias, ThinkingPattern } from './ai.types';
 
+// Aligned with cognitive-bias-framework.ts - the 11 validated CBT biases
 const COGNITIVE_BIASES: Omit<CognitiveBias, 'intensity'>[] = [
   {
-    name: 'Confirmation Bias',
-    description: 'Tendency to search for or interpret information that confirms pre-existing beliefs.',
+    name: 'All-or-Nothing Thinking',
+    description: 'Viewing situations in only two categories (black-and-white) rather than on a continuum.',
   },
   {
-    name: 'Anchoring Bias',
-    description: 'Over-reliance on the first piece of information encountered when making decisions.',
+    name: 'Catastrophizing',
+    description: "Expecting the worst possible outcome; 'what if' spirals that escalate into cascading predictions of disaster.",
   },
   {
-    name: 'Availability Heuristic',
-    description: 'Overestimating the likelihood of events based on how easily they come to mind.',
+    name: 'Mind Reading',
+    description: "Assuming you know what others are thinking without evidence.",
   },
   {
-    name: 'Loss Aversion',
-    description: 'The tendency to prefer avoiding losses over acquiring equivalent gains.',
+    name: 'Should Statements',
+    description: "Rigid expectations using 'should', 'must', 'have to' that create unnecessary pressure.",
   },
   {
-    name: 'Halo Effect',
-    description: 'Letting one positive trait influence the overall perception of a person or thing.',
+    name: 'Emotional Reasoning',
+    description: 'Treating feelings as evidence about reality.',
   },
   {
-    name: 'Dunning-Kruger Effect',
-    description: 'Overestimating one\'s own abilities in areas where one lacks expertise.',
+    name: 'Overgeneralization',
+    description: 'Drawing broad conclusions from single events.',
   },
   {
-    name: 'Negativity Bias',
-    description: 'Giving more weight to negative experiences than positive ones.',
+    name: 'Personalization',
+    description: 'Taking excessive blame for things outside your control.',
   },
   {
-    name: 'Optimism Bias',
-    description: 'Believing that negative events are less likely to happen to oneself.',
+    name: 'Filtering',
+    description: 'Focusing only on negatives while ignoring or dismissing positives.',
+  },
+  {
+    name: 'Fortune Telling',
+    description: 'Predicting negative outcomes with false certainty.',
+  },
+  {
+    name: 'Labeling',
+    description: 'Defining self or others with global negative labels rather than specific behaviors.',
+  },
+  {
+    name: 'Procrastination',
+    description: 'A complex self-regulatory failure involving avoidance of tasks due to emotional dysregulation, perfectionism, or fear of failure.',
   },
 ];
 

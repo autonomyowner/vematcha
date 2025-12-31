@@ -3,6 +3,8 @@
  * For deep end-of-session analysis with extended thinking
  */
 
+import { getBiasNames } from './cognitive-bias-framework';
+
 export interface SessionData {
   messages: Array<{ role: string; content: string }>;
   accumulatedBiases?: Array<{ name: string; confidence: number }>;
@@ -21,6 +23,9 @@ export function getSessionAnalysisPrompt(sessionData: SessionData): string {
   const emotionalContext = sessionData.emotionalJourney?.length
     ? `Emotional journey: ${JSON.stringify(sessionData.emotionalJourney)}`
     : 'No emotional journey data';
+
+  // Get validated bias names from unified framework
+  const validBiasNames = getBiasNames().join(', ');
 
   return `You are Matcha, conducting a thoughtful end-of-session analysis.
 
@@ -89,8 +94,13 @@ PROVIDE YOUR ANALYSIS IN THIS JSON FORMAT:
   "closingMessage": "A warm, encouraging message to close the session that acknowledges what they shared and celebrates any progress"
 }
 
+VALID BIAS NAMES (use only these):
+${validBiasNames}
+
 IMPORTANT:
 - Only include biases that showed up multiple times or very clearly
+- Use ONLY the validated bias names listed above
+- Pay special attention to Procrastination (emotional avoidance) and Catastrophizing (what-if chains)
 - Patterns must sum to 100%
 - The closing message should feel personal and warm, not generic
 - If the conversation was brief or light, adjust analysis depth accordingly`;

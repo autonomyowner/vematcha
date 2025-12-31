@@ -52,11 +52,12 @@ function DashboardContent() {
   }, [searchParams, router]);
 
   // Fallback data when API is not available or still loading
+  // Uses validated CBT biases from cognitive-bias-framework.ts
   const fallbackBiases = [
-    { name: t.dashboard.confirmationBias, intensity: 75, description: t.dashboard.confirmationBiasDesc },
-    { name: t.dashboard.haloEffect, intensity: 60, description: t.dashboard.haloEffectDesc },
-    { name: t.dashboard.lossAversion, intensity: 45, description: t.dashboard.lossAversionDesc },
-    { name: t.dashboard.anchoringBias, intensity: 55, description: t.dashboard.anchoringBiasDesc },
+    { name: t.dashboard.catastrophizing, intensity: 75, description: t.dashboard.catastrophizingDesc },
+    { name: t.dashboard.procrastination, intensity: 68, description: t.dashboard.procrastinationDesc },
+    { name: t.dashboard.allOrNothingThinking, intensity: 55, description: t.dashboard.allOrNothingThinkingDesc },
+    { name: t.dashboard.shouldStatements, intensity: 45, description: t.dashboard.shouldStatementsDesc },
   ];
 
   const fallbackPatterns = [

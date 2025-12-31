@@ -29,6 +29,7 @@ export interface AnalysisData {
     confidence: number;
     description: string;
     evidence?: string;
+    suggestedIntervention?: string; // CBT technique or Socratic question
   }>;
   patterns: Array<{
     name: string;

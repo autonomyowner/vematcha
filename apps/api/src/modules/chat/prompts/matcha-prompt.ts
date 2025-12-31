@@ -3,6 +3,8 @@
  * Brand-aligned prompts for accurate psychological analysis
  */
 
+import { getCognitiveBiasDetectionPrompt } from './cognitive-bias-framework';
+
 export const MATCHA_IDENTITY = `You are Matcha, an AI companion dedicated to helping people understand their minds better.
 
 CORE IDENTITY:
@@ -59,69 +61,8 @@ Detection Guidelines:
 
 Secondary emotions should only be noted if clearly present, not assumed.`;
 
-export const COGNITIVE_BIAS_DETECTION = `COGNITIVE BIAS DETECTION FRAMEWORK:
-
-IMPORTANT: Only report biases you're highly confident about (>0.7 confidence).
-Always provide specific evidence from their message.
-
-HIGH-CONFIDENCE BIASES TO DETECT:
-
-1. All-or-Nothing Thinking (Black-and-White)
-   - Signals: "always", "never", "completely", "totally", extreme statements
-   - Example: "I always mess things up" / "Nothing ever works out"
-   - Evidence required: Specific words showing binary thinking
-
-2. Catastrophizing
-   - Signals: Jumping to worst case, "what if" spirals, disaster predictions
-   - Example: "If I fail this, my career is over"
-   - Evidence required: Escalation from specific event to catastrophic outcome
-
-3. Mind Reading
-   - Signals: Assuming others' thoughts without evidence
-   - Example: "They definitely think I'm incompetent"
-   - Evidence required: Claim about others' internal states without verification
-
-4. Should Statements
-   - Signals: Rigid expectations using "should", "must", "have to", "ought to"
-   - Example: "I should be able to handle this by now"
-   - Evidence required: Prescriptive self-talk creating pressure
-
-5. Emotional Reasoning
-   - Signals: Treating feelings as facts about reality
-   - Example: "I feel stupid, so I must be stupid"
-   - Evidence required: Feeling stated as evidence for conclusion
-
-6. Overgeneralization
-   - Signals: Single event treated as universal pattern
-   - Example: "I failed once, so I'll fail again"
-   - Evidence required: One instance generalized to rule
-
-7. Personalization
-   - Signals: Taking blame for things outside control
-   - Example: "It's my fault they're in a bad mood"
-   - Evidence required: Self-blame for external events
-
-8. Filtering (Disqualifying the Positive)
-   - Signals: Ignoring positives, focusing only on negatives
-   - Example: Dismissing compliments, focusing on one criticism
-   - Evidence required: Positive dismissed or minimized
-
-9. Fortune Telling
-   - Signals: Predicting negative outcomes with certainty
-   - Example: "I know this won't work out"
-   - Evidence required: Negative prediction stated as fact
-
-10. Labeling
-    - Signals: Defining self/others with global negative labels
-    - Example: "I'm such a failure" (vs "I failed at this task")
-    - Evidence required: Identity-level negative label
-
-DETECTION RULES:
-- Only report biases with specific, quotable evidence
-- Never report more than 3 biases per message
-- If uncertain, don't report it
-- Consider context: some "biases" are actually realistic assessments
-- Patterns matter more than single instances`;
+// Use unified cognitive bias framework (includes 11 biases with CBT interventions)
+export const COGNITIVE_BIAS_DETECTION = getCognitiveBiasDetectionPrompt();
 
 export const THERAPEUTIC_QUESTION_GUIDE = `ASKING BETTER THERAPEUTIC QUESTIONS:
 
@@ -226,10 +167,11 @@ RESPONSE FORMAT (JSON):
     },
     "biases": [
       {
-        "name": "Exact bias name from framework",
+        "name": "Exact bias name from framework (11 biases including Procrastination)",
         "confidence": 0.7-1.0,
         "description": "how this bias appears in their message",
-        "evidence": "specific quote from their message"
+        "evidence": "specific quote from their message",
+        "suggestedIntervention": "optional: CBT technique or Socratic question to address this bias"
       }
     ],
     "patterns": [

@@ -1,7 +1,9 @@
 export interface CognitiveBias {
   name: string;
-  intensity: number; // 0-100
+  intensity: number; // 0-100 (or confidence 0-1)
   description: string;
+  evidence?: string; // Specific quote from user message
+  suggestedIntervention?: string; // CBT technique or Socratic question
 }
 
 export interface ThinkingPattern {

@@ -31,10 +31,11 @@ export default function InteractiveDemo() {
   const containerRef = useRef<HTMLDivElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
 
+  // Uses validated CBT biases from cognitive-bias-framework
   const biases = [
-    { name: t.demo.negativityBias, percentage: 78, color: 'var(--terra-400)' },
-    { name: t.demo.imposterSyndrome, percentage: 85, color: 'var(--matcha-500)' },
-    { name: t.demo.lossAversion, percentage: 62, color: 'var(--terra-500)' },
+    { name: t.demo.catastrophizing, percentage: 78, color: 'var(--terra-400)' },
+    { name: t.demo.procrastination, percentage: 85, color: 'var(--matcha-500)' },
+    { name: t.demo.allOrNothingThinking, percentage: 62, color: 'var(--terra-500)' },
   ];
 
   // Intersection observer to start animation when in view
