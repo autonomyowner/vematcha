@@ -14,7 +14,7 @@ const fadeInUp = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }
   }
 };
 
@@ -34,7 +34,7 @@ const scaleIn = {
   visible: {
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] }
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }
   }
 };
 
@@ -57,7 +57,7 @@ function AnimatedSection({ children, className = '', delay = 0 }: {
         visible: {
           opacity: 1,
           y: 0,
-          transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }
+          transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] as const }
         }
       }}
       className={className}
@@ -235,7 +235,7 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={mounted ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
             className="relative max-w-3xl mx-auto"
           >
             <div
