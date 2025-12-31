@@ -9,45 +9,23 @@ export function ExportButton() {
   const { language } = useLanguage();
   const [exporting, setExporting] = useState(false);
 
-  const handleExport = async (format: 'json' | 'csv' | 'print') => {
+  const handleExport = async () => {
     setExporting(true);
     try {
       const token = await getToken();
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/dashboard/export?format=${format}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/dashboard/export`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (!res.ok) throw new Error('Export failed');
 
-      if (format === 'print') {
-        // Open HTML in new window for printing
-        const html = await res.text();
-        const printWindow = window.open('', '_blank');
-        if (printWindow) {
-          printWindow.document.write(html);
-          printWindow.document.close();
-          // Auto-trigger print dialog after content loads
-          printWindow.onload = () => {
-            printWindow.print();
-          };
-        }
-        return;
+      const html = await res.text();
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.write(html);
+        printWindow.document.close();
       }
-
-      const data = format === 'json' ? await res.json() : await res.text();
-
-      const blob = new Blob(
-        [format === 'json' ? JSON.stringify(data, null, 2) : data],
-        { type: format === 'json' ? 'application/json' : 'text/csv' }
-      );
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `matcha-insights-${new Date().toISOString().split('T')[0]}.${format}`;
-      a.click();
-      URL.revokeObjectURL(url);
     } catch (err) {
       console.error('Export failed:', err);
     } finally {
@@ -57,57 +35,29 @@ export function ExportButton() {
 
   const t = {
     en: {
-      printReport: 'Print Report',
-      exportJson: 'Export JSON',
-      exportCsv: 'Export CSV',
-      exporting: 'Exporting...',
+      downloadReport: 'Download Report',
+      generating: 'Generating...',
     },
     fr: {
-      printReport: 'Imprimer',
-      exportJson: 'Exporter JSON',
-      exportCsv: 'Exporter CSV',
-      exporting: 'Exportation...',
+      downloadReport: 'Telecharger le rapport',
+      generating: 'Generation...',
     },
   };
 
   const text = language === 'fr' ? t.fr : t.en;
 
   return (
-    <div className="flex flex-wrap gap-2">
-      <button
-        onClick={() => handleExport('print')}
-        disabled={exporting}
-        className="px-4 py-2 rounded-lg text-sm font-medium transition-all hover:opacity-80"
-        style={{
-          background: 'var(--matcha-500)',
-          color: 'white',
-        }}
-      >
-        {exporting ? text.exporting : text.printReport}
-      </button>
-      <button
-        onClick={() => handleExport('json')}
-        disabled={exporting}
-        className="px-4 py-2 rounded-lg text-sm font-medium transition-all hover:opacity-80"
-        style={{
-          background: 'var(--cream-200)',
-          color: 'var(--text-primary)',
-        }}
-      >
-        {exporting ? text.exporting : text.exportJson}
-      </button>
-      <button
-        onClick={() => handleExport('csv')}
-        disabled={exporting}
-        className="px-4 py-2 rounded-lg text-sm font-medium transition-all hover:opacity-80"
-        style={{
-          background: 'var(--cream-200)',
-          color: 'var(--text-primary)',
-        }}
-      >
-        {exporting ? text.exporting : text.exportCsv}
-      </button>
-    </div>
+    <button
+      onClick={handleExport}
+      disabled={exporting}
+      className="px-5 py-2.5 rounded-lg text-sm font-medium transition-all hover:opacity-90"
+      style={{
+        background: 'var(--matcha-500)',
+        color: 'white',
+      }}
+    >
+      {exporting ? text.generating : text.downloadReport}
+    </button>
   );
 }
 
