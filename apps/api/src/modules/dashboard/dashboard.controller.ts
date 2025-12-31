@@ -16,7 +16,7 @@ export class DashboardController {
   @Get('export')
   async exportInsights(
     @CurrentUser() user: AuthenticatedUser,
-    @Query('format') format: 'json' | 'csv' = 'json',
+    @Query('format') format: 'json' | 'csv' | 'print' = 'json',
     @Query('from') from?: string,
     @Query('to') to?: string,
   ) {

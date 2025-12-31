@@ -9,7 +9,7 @@ export function ExportButton() {
   const { language } = useLanguage();
   const [exporting, setExporting] = useState(false);
 
-  const handleExport = async (format: 'json' | 'csv') => {
+  const handleExport = async (format: 'json' | 'csv' | 'print') => {
     setExporting(true);
     try {
       const token = await getToken();
@@ -19,6 +19,21 @@ export function ExportButton() {
       );
 
       if (!res.ok) throw new Error('Export failed');
+
+      if (format === 'print') {
+        // Open HTML in new window for printing
+        const html = await res.text();
+        const printWindow = window.open('', '_blank');
+        if (printWindow) {
+          printWindow.document.write(html);
+          printWindow.document.close();
+          // Auto-trigger print dialog after content loads
+          printWindow.onload = () => {
+            printWindow.print();
+          };
+        }
+        return;
+      }
 
       const data = format === 'json' ? await res.json() : await res.text();
 
@@ -42,11 +57,13 @@ export function ExportButton() {
 
   const t = {
     en: {
+      printReport: 'Print Report',
       exportJson: 'Export JSON',
       exportCsv: 'Export CSV',
       exporting: 'Exporting...',
     },
     fr: {
+      printReport: 'Imprimer',
       exportJson: 'Exporter JSON',
       exportCsv: 'Exporter CSV',
       exporting: 'Exportation...',
@@ -56,7 +73,18 @@ export function ExportButton() {
   const text = language === 'fr' ? t.fr : t.en;
 
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-wrap gap-2">
+      <button
+        onClick={() => handleExport('print')}
+        disabled={exporting}
+        className="px-4 py-2 rounded-lg text-sm font-medium transition-all hover:opacity-80"
+        style={{
+          background: 'var(--matcha-500)',
+          color: 'white',
+        }}
+      >
+        {exporting ? text.exporting : text.printReport}
+      </button>
       <button
         onClick={() => handleExport('json')}
         disabled={exporting}

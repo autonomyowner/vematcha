@@ -343,11 +343,11 @@ export class DashboardService {
   }
 
   /**
-   * Export user data in JSON or CSV format
+   * Export user data in JSON, CSV, or printable HTML format
    */
   async exportUserData(
     userId: string,
-    format: 'json' | 'csv',
+    format: 'json' | 'csv' | 'print',
     fromDate?: string,
     toDate?: string,
   ) {
@@ -452,6 +452,10 @@ export class DashboardService {
       return this.convertToCSV(exportData);
     }
 
+    if (format === 'print') {
+      return this.convertToPrintableHTML(exportData);
+    }
+
     return exportData;
   }
 
@@ -525,5 +529,372 @@ export class DashboardService {
     }
 
     return lines.join('\n');
+  }
+
+  private convertToPrintableHTML(data: any): string {
+    const generateInsightsList = (insights: string[]) => {
+      if (!insights || insights.length === 0) return '<p class="empty">No insights recorded</p>';
+      return `<ul>${insights.map(i => `<li>${i}</li>`).join('')}</ul>`;
+    };
+
+    const generateBiasesList = (biases: string[]) => {
+      if (!biases || biases.length === 0) return '<span class="empty">None detected</span>';
+      return biases.map(b => `<span class="tag">${b}</span>`).join(' ');
+    };
+
+    const generatePatternsList = (patterns: string[]) => {
+      if (!patterns || patterns.length === 0) return '<span class="empty">None identified</span>';
+      return patterns.map(p => `<span class="tag pattern">${p}</span>`).join(' ');
+    };
+
+    // Collect all unique insights
+    const allInsights = new Set<string>();
+    data.chatSessions.forEach((s: any) => s.keyInsights.forEach((i: string) => allInsights.add(i)));
+    data.textAnalyses.forEach((a: any) => a.keyInsights.forEach((i: string) => allInsights.add(i)));
+
+    // Collect all biases with counts
+    const biasCount = new Map<string, number>();
+    data.chatSessions.forEach((s: any) => {
+      s.biasesDetected.forEach((b: string) => {
+        const name = b.split(' (')[0];
+        biasCount.set(name, (biasCount.get(name) || 0) + 1);
+      });
+    });
+    data.textAnalyses.forEach((a: any) => {
+      a.biasesDetected.forEach((b: string) => {
+        const name = b.split(' (')[0];
+        biasCount.set(name, (biasCount.get(name) || 0) + 1);
+      });
+    });
+
+    const topBiases = Array.from(biasCount.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matcha Insights Report</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    @page {
+      size: A4;
+      margin: 20mm;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      color: #2d2d2d;
+      background: #fff;
+      padding: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      border-bottom: 3px solid #4a7c59;
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+    }
+
+    .logo {
+      font-size: 32px;
+      font-weight: 700;
+      color: #4a7c59;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: #7fb069;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .report-info {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 16px;
+      font-size: 13px;
+      color: #555;
+    }
+
+    .section {
+      margin-bottom: 32px;
+      page-break-inside: avoid;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #4a7c59;
+      border-bottom: 2px solid #e8e8e8;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .summary-card {
+      background: #f8faf8;
+      border: 1px solid #e0e8e0;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .summary-number {
+      font-size: 28px;
+      font-weight: 700;
+      color: #4a7c59;
+    }
+
+    .summary-label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #f0f5f0;
+      border: 1px solid #d0e0d0;
+      color: #4a7c59;
+      padding: 4px 10px;
+      border-radius: 16px;
+      font-size: 12px;
+      margin: 2px;
+    }
+
+    .tag.pattern {
+      background: #f5f5f0;
+      border-color: #e0e0d0;
+      color: #666;
+    }
+
+    .session-card, .analysis-card {
+      background: #fafafa;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .session-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .session-title {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .session-date {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .session-meta {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .field-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #888;
+      margin-top: 12px;
+      margin-bottom: 4px;
+    }
+
+    .empty {
+      color: #aaa;
+      font-style: italic;
+      font-size: 13px;
+    }
+
+    .insights-list {
+      background: #f8faf8;
+      border-left: 4px solid #4a7c59;
+      padding: 16px 20px;
+      margin-top: 8px;
+    }
+
+    .insights-list ul {
+      padding-left: 20px;
+    }
+
+    .insights-list li {
+      margin-bottom: 8px;
+      color: #444;
+    }
+
+    .bias-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .bias-item {
+      background: #fff;
+      border: 1px solid #d0e0d0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      text-align: center;
+      min-width: 120px;
+    }
+
+    .bias-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: #4a7c59;
+    }
+
+    .bias-count {
+      font-size: 11px;
+      color: #888;
+    }
+
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+    }
+
+    @media print {
+      body { padding: 0; }
+      .session-card, .analysis-card { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">matcha<span>.xyz</span></div>
+    <div class="subtitle">Personal Insights Report</div>
+    <div class="report-info">
+      <span>Prepared for: ${data.userProfile.name}</span>
+      <span>Generated: ${data.exportInfo.exportedAtReadable}</span>
+    </div>
+    <div class="report-info">
+      <span>Period: ${data.exportInfo.periodFrom} to ${data.exportInfo.periodTo}</span>
+      <span>Member since: ${data.userProfile.memberSince}</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Summary</h2>
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="summary-number">${data.summary.totalChatSessions}</div>
+        <div class="summary-label">Chat Sessions</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-number">${data.summary.totalTextAnalyses}</div>
+        <div class="summary-label">Text Analyses</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-number">${data.summary.totalInteractions}</div>
+        <div class="summary-label">Total Interactions</div>
+      </div>
+    </div>
+  </div>
+
+  ${topBiases.length > 0 ? `
+  <div class="section">
+    <h2 class="section-title">Most Common Cognitive Biases</h2>
+    <div class="bias-summary">
+      ${topBiases.map(([name, count]) => `
+        <div class="bias-item">
+          <div class="bias-name">${name}</div>
+          <div class="bias-count">Detected ${count} time${count > 1 ? 's' : ''}</div>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+  ` : ''}
+
+  <div class="section">
+    <h2 class="section-title">Key Insights</h2>
+    <div class="insights-list">
+      ${allInsights.size > 0
+        ? `<ul>${Array.from(allInsights).map(i => `<li>${i}</li>`).join('')}</ul>`
+        : '<p class="empty">No insights recorded yet. Keep using Matcha to build your profile.</p>'
+      }
+    </div>
+  </div>
+
+  ${data.chatSessions.length > 0 ? `
+  <div class="section">
+    <h2 class="section-title">Chat Sessions</h2>
+    ${data.chatSessions.map((session: any) => `
+      <div class="session-card">
+        <div class="session-header">
+          <span class="session-title">${session.title}</span>
+          <span class="session-date">${session.date}</span>
+        </div>
+        <div class="session-meta">${session.messageCount} messages${session.emotionalState ? ` • ${session.emotionalState}` : ''}</div>
+        <div class="field-label">Biases Detected</div>
+        <div>${generateBiasesList(session.biasesDetected)}</div>
+        <div class="field-label">Thinking Patterns</div>
+        <div>${generatePatternsList(session.thinkingPatterns)}</div>
+        ${session.keyInsights.length > 0 ? `
+          <div class="field-label">Insights</div>
+          ${generateInsightsList(session.keyInsights)}
+        ` : ''}
+      </div>
+    `).join('')}
+  </div>
+  ` : ''}
+
+  ${data.textAnalyses.length > 0 ? `
+  <div class="section">
+    <h2 class="section-title">Text Analyses</h2>
+    ${data.textAnalyses.map((analysis: any) => `
+      <div class="analysis-card">
+        <div class="session-header">
+          <span class="session-title">Analysis</span>
+          <span class="session-date">${analysis.date}</span>
+        </div>
+        <div class="session-meta" style="font-style: italic; color: #666;">"${analysis.textAnalyzed}"</div>
+        <div class="field-label">Biases Detected</div>
+        <div>${generateBiasesList(analysis.biasesDetected)}</div>
+        <div class="field-label">Thinking Patterns</div>
+        <div>${generatePatternsList(analysis.thinkingPatterns)}</div>
+        ${analysis.keyInsights.length > 0 ? `
+          <div class="field-label">Insights</div>
+          ${generateInsightsList(analysis.keyInsights)}
+        ` : ''}
+      </div>
+    `).join('')}
+  </div>
+  ` : ''}
+
+  <div class="footer">
+    <p>Generated by matcha.xyz — Your personal cognitive bias companion</p>
+    <p style="margin-top: 4px;">This report is confidential and intended for personal use only.</p>
+  </div>
+</body>
+</html>`;
   }
 }
