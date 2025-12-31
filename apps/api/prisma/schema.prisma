@@ -42,12 +42,15 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  analyses      Analysis[]
-  usageLimit    UsageLimit?
-  conversations Conversation[]
-  voiceSessions VoiceSession[]
-  streak        UserStreak?
-  exercises     Exercise[]
+  analyses           Analysis[]
+  usageLimit         UsageLimit?
+  conversations      Conversation[]
+  voiceSessions      VoiceSession[]
+  streak             UserStreak?
+  exercises          Exercise[]
+  weeklyReports      WeeklyReport[]
+  fitnessScores      MentalFitnessScore[]
+  programEnrollments ProgramEnrollment[]
 
   @@map("users")
 }
@@ -223,4 +226,67 @@ model Exercise {
 
   @@index([userId, completed])
   @@map("exercises")
+}
+
+// ============================================
+// TIER 2: REPORTS, SCORES, PROGRAMS
+// ============================================
+
+model WeeklyReport {
+  id          String    @id @default(cuid())
+  userId      String    @map("user_id")
+  weekStart   DateTime  @map("week_start") @db.Date
+  weekEnd     DateTime  @map("week_end") @db.Date
+  fileUrl     String?   @map("file_url")
+  emailSentAt DateTime? @map("email_sent_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, weekStart])
+  @@map("weekly_reports")
+}
+
+model MentalFitnessScore {
+  id           String   @id @default(cuid())
+  userId       String   @map("user_id")
+  score        Int      // 0-100
+  components   Json     // { consistency, awareness, progress, engagement }
+  calculatedAt DateTime @default(now()) @map("calculated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, calculatedAt(sort: Desc)])
+  @@map("mental_fitness_scores")
+}
+
+model Program {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  name         String
+  description  String   @db.Text
+  durationDays Int      @map("duration_days")
+  modules      Json     // Array of { day, title, content, exercise }
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  enrollments ProgramEnrollment[]
+
+  @@map("programs")
+}
+
+model ProgramEnrollment {
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  programId     String    @map("program_id")
+  startedAt     DateTime  @default(now()) @map("started_at")
+  currentDay    Int       @default(1) @map("current_day")
+  completedDays Json      @default("[]") @map("completed_days") // Array of completed day numbers
+  completedAt   DateTime? @map("completed_at")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  program Program @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, programId])
+  @@map("program_enrollments")
 }

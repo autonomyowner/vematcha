@@ -15,6 +15,9 @@ import { StripeModule } from './modules/stripe/stripe.module';
 import { VoiceModule } from './modules/voice/voice.module';
 import { StreaksModule } from './modules/streaks/streaks.module';
 import { ExercisesModule } from './modules/exercises/exercises.module';
+import { ReportsModule } from './modules/reports/reports.module';
+import { FitnessScoreModule } from './modules/fitness-score/fitness-score.module';
+import { ProgramsModule } from './modules/programs/programs.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule, RedisThrottlerStorage } from './providers/redis';
 import configuration from './config/configuration';
@@ -64,6 +67,9 @@ import configuration from './config/configuration';
     StripeModule,
     StreaksModule,
     ExercisesModule,
+    ReportsModule,
+    FitnessScoreModule,
+    ProgramsModule,
     HealthModule,
   ],
   controllers: [],

@@ -11,6 +11,8 @@ import { trackSignup, trackPurchase } from '../../lib/analytics';
 import { StreakCard } from '../../components/StreakCard';
 import { ExerciseList } from '../../components/ExerciseCard';
 import { ExportSection } from '../../components/ExportButton';
+import { FitnessScoreCard } from '../../components/FitnessScore';
+import { ProgramList } from '../../components/ProgramCard';
 
 interface Exercise {
   id: string;
@@ -336,6 +338,13 @@ function DashboardContent() {
               <StreakCard />
             </div>
 
+            {/* Mental Fitness Score (Pro only) */}
+            {isPro && (
+              <div className="mt-4">
+                <FitnessScoreCard />
+              </div>
+            )}
+
             {/* Export Data */}
             <div className="mt-4">
               <ExportSection />
@@ -447,6 +456,9 @@ function DashboardContent() {
               onGenerateNew={handleGenerateExercise}
               generating={generatingExercise}
             />
+
+            {/* CBT Programs */}
+            <ProgramList />
           </div>
         </div>
 
