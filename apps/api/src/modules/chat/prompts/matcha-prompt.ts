@@ -192,6 +192,7 @@ IMPORTANT RULES:
 - Only include biases with confidence >= 0.7
 - Insights should be specific to THIS person, not generic advice
 - If the message is a simple greeting, keep analysis minimal and confidence low
+- For conversations with fewer than 5 messages, set all bias confidence values below 0.3 - meaningful pattern detection requires sufficient conversational context
 - Never diagnose or pathologize - describe patterns, not disorders
 - If someone mentions self-harm or crisis, acknowledge warmly and suggest professional resources`;
 }

@@ -19,6 +19,10 @@ const FREE_TIER_MONTHLY_MESSAGES = 50;
 // Cache TTLs in seconds
 const USAGE_CACHE_TTL = 60; // 1 minute for usage limits
 
+// Analysis filtering thresholds
+const MIN_MESSAGES_FOR_ANALYSIS = 5;
+const MIN_CONFIDENCE_THRESHOLD = 0.3;
+
 @Injectable()
 export class ChatService {
   private readonly logger = new Logger(ChatService.name);
@@ -298,10 +302,28 @@ export class ChatService {
       },
     });
 
+    // Filter analysis based on message count and confidence thresholds
+    let filteredAnalysis = response.analysis;
+
+    if (messageCount < MIN_MESSAGES_FOR_ANALYSIS) {
+      // Not enough context for accurate analysis
+      filteredAnalysis = null;
+    } else if (filteredAnalysis) {
+      // Check if any bias has sufficient confidence
+      const hasHighConfidenceBias = filteredAnalysis.biases?.some(
+        (b) => b.confidence >= MIN_CONFIDENCE_THRESHOLD,
+      );
+
+      // If no high-confidence insights, don't show analysis
+      if (!hasHighConfidenceBias) {
+        filteredAnalysis = null;
+      }
+    }
+
     return {
       conversationId,
       message: assistantMessage,
-      analysis: response.analysis,
+      analysis: filteredAnalysis,
       usage: response.usage,
       modelTier, // Include which tier was used for transparency
     };
