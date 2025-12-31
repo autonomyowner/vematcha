@@ -46,6 +46,8 @@ model User {
   usageLimit    UsageLimit?
   conversations Conversation[]
   voiceSessions VoiceSession[]
+  streak        UserStreak?
+  exercises     Exercise[]
 
   @@map("users")
 }
@@ -184,4 +186,41 @@ model VoiceSession {
   @@index([userId, createdAt(sort: Desc)])
   @@index([vapiCallId])
   @@map("voice_sessions")
+}
+
+// ============================================
+// VALUE-ADD FEATURES
+// ============================================
+
+model UserStreak {
+  id              String    @id @default(cuid())
+  userId          String    @unique @map("user_id")
+  currentStreak   Int       @default(0) @map("current_streak")
+  longestStreak   Int       @default(0) @map("longest_streak")
+  lastCheckInDate DateTime? @map("last_check_in_date") @db.Date
+  totalCheckIns   Int       @default(0) @map("total_check_ins")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_streaks")
+}
+
+model Exercise {
+  id               String    @id @default(cuid())
+  userId           String    @map("user_id")
+  biasType         String    @map("bias_type")
+  title            String
+  description      String    @db.Text
+  steps            Json
+  estimatedMinutes Int       @default(5) @map("estimated_minutes")
+  completed        Boolean   @default(false)
+  completedAt      DateTime? @map("completed_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, completed])
+  @@map("exercises")
 }

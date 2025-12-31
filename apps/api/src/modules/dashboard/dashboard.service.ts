@@ -341,4 +341,96 @@ export class DashboardService {
       }))
       .sort((a, b) => b.count - a.count);
   }
+
+  /**
+   * Export user data in JSON or CSV format
+   */
+  async exportUserData(
+    userId: string,
+    format: 'json' | 'csv',
+    fromDate?: string,
+    toDate?: string,
+  ) {
+    const from = fromDate ? new Date(fromDate) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const to = toDate ? new Date(toDate) : new Date();
+
+    const [conversations, analyses] = await Promise.all([
+      this.prisma.conversation.findMany({
+        where: {
+          userId,
+          createdAt: { gte: from, lte: to },
+        },
+        include: { messages: true },
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.analysis.findMany({
+        where: {
+          userId,
+          createdAt: { gte: from, lte: to },
+          status: 'COMPLETED',
+        },
+        orderBy: { createdAt: 'desc' },
+      }),
+    ]);
+
+    const exportData = {
+      exportedAt: new Date().toISOString(),
+      period: { from: from.toISOString(), to: to.toISOString() },
+      summary: {
+        totalConversations: conversations.length,
+        totalAnalyses: analyses.length,
+      },
+      conversations: conversations.map(c => ({
+        id: c.id,
+        date: c.createdAt,
+        messageCount: c.messages.length,
+        biases: c.biases,
+        patterns: c.patterns,
+        emotionalState: c.emotionalState,
+        insights: c.insights,
+      })),
+      analyses: analyses.map(a => ({
+        id: a.id,
+        date: a.createdAt,
+        input: a.inputText.length > 200 ? a.inputText.substring(0, 200) + '...' : a.inputText,
+        biases: a.biases,
+        patterns: a.patterns,
+        insights: a.insights,
+      })),
+    };
+
+    if (format === 'csv') {
+      return this.convertToCSV(exportData);
+    }
+
+    return exportData;
+  }
+
+  private convertToCSV(data: any): string {
+    const rows: string[][] = [
+      ['Date', 'Type', 'Biases', 'Patterns', 'Key Insight'],
+    ];
+
+    data.conversations.forEach((c: any) => {
+      rows.push([
+        new Date(c.date).toISOString().split('T')[0],
+        'Chat',
+        JSON.stringify(c.biases || []),
+        JSON.stringify(c.patterns || {}),
+        (c.insights || [])[0] || '',
+      ]);
+    });
+
+    data.analyses.forEach((a: any) => {
+      rows.push([
+        new Date(a.date).toISOString().split('T')[0],
+        'Analysis',
+        JSON.stringify(a.biases || []),
+        JSON.stringify(a.patterns || {}),
+        (a.insights || [])[0] || '',
+      ]);
+    });
+
+    return rows.map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+  }
 }

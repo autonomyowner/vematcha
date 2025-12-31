@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, Suspense } from 'react';
+import { useEffect, useRef, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useUser, useAuth } from '@clerk/nextjs';
@@ -8,17 +8,71 @@ import { useLanguage } from '../../components/LanguageProvider';
 import { Button } from '../../components/ui/Button';
 import { useDashboard } from '../../hooks/useApi';
 import { trackSignup, trackPurchase } from '../../lib/analytics';
+import { StreakCard } from '../../components/StreakCard';
+import { ExerciseList } from '../../components/ExerciseCard';
+import { ExportSection } from '../../components/ExportButton';
+
+interface Exercise {
+  id: string;
+  biasType: string;
+  title: string;
+  description: string;
+  steps: string[];
+  estimatedMinutes: number;
+  completed: boolean;
+}
 
 function DashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, isLoaded: userLoaded } = useUser();
-  const { isSignedIn, isLoaded: authLoaded } = useAuth();
+  const { isSignedIn, isLoaded: authLoaded, getToken } = useAuth();
   const { t, language } = useLanguage();
   const { data: dashboardData, isLoading: dashboardLoading, error: dashboardError } = useDashboard();
   const hasTrackedRef = useRef(false);
+  const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [generatingExercise, setGeneratingExercise] = useState(false);
 
   const isLoading = !userLoaded || !authLoaded || dashboardLoading;
+
+  // Fetch exercises
+  useEffect(() => {
+    if (!isSignedIn) return;
+    fetchExercises();
+  }, [isSignedIn]);
+
+  const fetchExercises = async () => {
+    try {
+      const token = await getToken();
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/exercises`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setExercises(data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch exercises:', err);
+    }
+  };
+
+  const handleGenerateExercise = async () => {
+    setGeneratingExercise(true);
+    try {
+      const token = await getToken();
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/exercises/generate-from-recent`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        await fetchExercises();
+      }
+    } catch (err) {
+      console.error('Failed to generate exercise:', err);
+    } finally {
+      setGeneratingExercise(false);
+    }
+  };
 
   // Track signup for new users (created within last 60 seconds)
   useEffect(() => {
@@ -276,6 +330,16 @@ function DashboardContent() {
                 {t.dashboard.startNewAnalysis}
               </Button>
             </div>
+
+            {/* Daily Streak */}
+            <div className="mt-6">
+              <StreakCard />
+            </div>
+
+            {/* Export Data */}
+            <div className="mt-4">
+              <ExportSection />
+            </div>
           </div>
 
           {/* Main Content */}
@@ -375,6 +439,14 @@ function DashboardContent() {
                 ))}
               </div>
             </div>
+
+            {/* AI Exercises */}
+            <ExerciseList
+              exercises={exercises}
+              onExerciseComplete={fetchExercises}
+              onGenerateNew={handleGenerateExercise}
+              generating={generatingExercise}
+            />
           </div>
         </div>
 

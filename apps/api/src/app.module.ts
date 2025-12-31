@@ -13,6 +13,8 @@ import { ChatModule } from './modules/chat/chat.module';
 import { TtsModule } from './modules/tts/tts.module';
 import { StripeModule } from './modules/stripe/stripe.module';
 import { VoiceModule } from './modules/voice/voice.module';
+import { StreaksModule } from './modules/streaks/streaks.module';
+import { ExercisesModule } from './modules/exercises/exercises.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule, RedisThrottlerStorage } from './providers/redis';
 import configuration from './config/configuration';
@@ -60,6 +62,8 @@ import configuration from './config/configuration';
     TtsModule,
     VoiceModule,
     StripeModule,
+    StreaksModule,
+    ExercisesModule,
     HealthModule,
   ],
   controllers: [],
