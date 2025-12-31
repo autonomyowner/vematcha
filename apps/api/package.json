@@ -48,6 +48,10 @@
     "@nestjs/throttler": "^6.4.0",
     "@prisma/client": "^5.22.0",
     "@types/axios": "^0.9.36",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.10.1",
+    "@types/nodemailer": "^7.0.4",
+    "@types/pdfkit": "^0.17.4",
     "axios": "^1.13.2",
     "bull": "^4.16.5",
     "ioredis": "^5.8.2",
@@ -63,13 +67,8 @@
   },
   "devDependencies": {
     "@nestjs/schematics": "^10.2.3",
-    "@types/express": "^4.17.21",
-    "@types/node": "^22.10.1",
-    "@types/nodemailer": "^7.0.4",
-    "@types/pdfkit": "^0.17.4",
     "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.2"
+    "tsconfig-paths": "^4.2.0"
   },
   "overrides": {
     "typescript": "^5.7.2"
