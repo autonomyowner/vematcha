@@ -354,7 +354,7 @@ export class DashboardService {
     const from = fromDate ? new Date(fromDate) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     const to = toDate ? new Date(toDate) : new Date();
 
-    const [conversations, analyses] = await Promise.all([
+    const [conversations, analyses, user] = await Promise.all([
       this.prisma.conversation.findMany({
         where: {
           userId,
@@ -371,31 +371,80 @@ export class DashboardService {
         },
         orderBy: { createdAt: 'desc' },
       }),
+      this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { firstName: true, email: true, createdAt: true },
+      }),
     ]);
 
+    // Format biases for readability
+    const formatBiases = (biases: any): string[] => {
+      if (!biases || !Array.isArray(biases)) return [];
+      return biases.map((b: any) => {
+        const intensity = b.intensity ?? Math.round((b.confidence ?? 0) * 100);
+        return `${b.name} (${intensity}%)`;
+      });
+    };
+
+    // Format patterns for readability
+    const formatPatterns = (patterns: any): string[] => {
+      if (!patterns) return [];
+      if (Array.isArray(patterns)) {
+        return patterns.map((p: any) => `${p.name} (${p.percentage}%)`);
+      }
+      return [];
+    };
+
+    // Format emotional state
+    const formatEmotionalState = (state: any): string => {
+      if (!state) return '';
+      const parts = [state.primary];
+      if (state.secondary) parts.push(state.secondary);
+      if (state.intensity) parts.push(`intensity: ${state.intensity}`);
+      return parts.join(', ');
+    };
+
     const exportData = {
-      exportedAt: new Date().toISOString(),
-      period: { from: from.toISOString(), to: to.toISOString() },
-      summary: {
-        totalConversations: conversations.length,
-        totalAnalyses: analyses.length,
+      exportInfo: {
+        exportedAt: new Date().toISOString(),
+        exportedAtReadable: new Date().toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+        periodFrom: from.toISOString().split('T')[0],
+        periodTo: to.toISOString().split('T')[0],
       },
-      conversations: conversations.map(c => ({
+      userProfile: {
+        name: user?.firstName || 'User',
+        email: user?.email || '',
+        memberSince: user?.createdAt?.toISOString().split('T')[0] || '',
+      },
+      summary: {
+        totalChatSessions: conversations.length,
+        totalTextAnalyses: analyses.length,
+        totalInteractions: conversations.length + analyses.length,
+      },
+      chatSessions: conversations.map(c => ({
         id: c.id,
-        date: c.createdAt,
+        date: c.createdAt.toISOString().split('T')[0],
+        title: c.title || 'Untitled Session',
         messageCount: c.messages.length,
-        biases: c.biases,
-        patterns: c.patterns,
-        emotionalState: c.emotionalState,
-        insights: c.insights,
+        emotionalState: formatEmotionalState(c.emotionalState),
+        biasesDetected: formatBiases(c.biases),
+        thinkingPatterns: formatPatterns(c.patterns),
+        keyInsights: c.insights || [],
       })),
-      analyses: analyses.map(a => ({
+      textAnalyses: analyses.map(a => ({
         id: a.id,
-        date: a.createdAt,
-        input: a.inputText.length > 200 ? a.inputText.substring(0, 200) + '...' : a.inputText,
-        biases: a.biases,
-        patterns: a.patterns,
-        insights: a.insights,
+        date: a.createdAt.toISOString().split('T')[0],
+        textAnalyzed: a.inputText.length > 200 ? a.inputText.substring(0, 200) + '...' : a.inputText,
+        biasesDetected: formatBiases(a.biases),
+        thinkingPatterns: formatPatterns(a.patterns),
+        keyInsights: a.insights || [],
       })),
     };
 
@@ -407,30 +456,74 @@ export class DashboardService {
   }
 
   private convertToCSV(data: any): string {
-    const rows: string[][] = [
-      ['Date', 'Type', 'Biases', 'Patterns', 'Key Insight'],
-    ];
+    const lines: string[] = [];
 
-    data.conversations.forEach((c: any) => {
-      rows.push([
-        new Date(c.date).toISOString().split('T')[0],
-        'Chat',
-        JSON.stringify(c.biases || []),
-        JSON.stringify(c.patterns || {}),
-        (c.insights || [])[0] || '',
-      ]);
-    });
+    // Header section
+    lines.push('MATCHA INSIGHTS EXPORT');
+    lines.push(`Exported: ${data.exportInfo.exportedAtReadable}`);
+    lines.push(`Period: ${data.exportInfo.periodFrom} to ${data.exportInfo.periodTo}`);
+    lines.push('');
 
-    data.analyses.forEach((a: any) => {
-      rows.push([
-        new Date(a.date).toISOString().split('T')[0],
-        'Analysis',
-        JSON.stringify(a.biases || []),
-        JSON.stringify(a.patterns || {}),
-        (a.insights || [])[0] || '',
-      ]);
-    });
+    // Summary section
+    lines.push('SUMMARY');
+    lines.push(`Total Chat Sessions: ${data.summary.totalChatSessions}`);
+    lines.push(`Total Text Analyses: ${data.summary.totalTextAnalyses}`);
+    lines.push('');
 
-    return rows.map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+    // Chat Sessions section
+    if (data.chatSessions.length > 0) {
+      lines.push('CHAT SESSIONS');
+      lines.push('Date,Title,Messages,Emotional State,Biases Detected,Thinking Patterns,Key Insights');
+
+      data.chatSessions.forEach((session: any) => {
+        const row = [
+          session.date,
+          session.title,
+          session.messageCount.toString(),
+          session.emotionalState,
+          session.biasesDetected.join('; ') || 'None detected',
+          session.thinkingPatterns.join('; ') || 'None identified',
+          session.keyInsights.join('; ') || 'No insights',
+        ];
+        lines.push(row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','));
+      });
+      lines.push('');
+    }
+
+    // Text Analyses section
+    if (data.textAnalyses.length > 0) {
+      lines.push('TEXT ANALYSES');
+      lines.push('Date,Text Analyzed,Biases Detected,Thinking Patterns,Key Insights');
+
+      data.textAnalyses.forEach((analysis: any) => {
+        const row = [
+          analysis.date,
+          analysis.textAnalyzed,
+          analysis.biasesDetected.join('; ') || 'None detected',
+          analysis.thinkingPatterns.join('; ') || 'None identified',
+          analysis.keyInsights.join('; ') || 'No insights',
+        ];
+        lines.push(row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','));
+      });
+      lines.push('');
+    }
+
+    // Aggregate insights section
+    lines.push('ALL UNIQUE INSIGHTS');
+    const allInsights = new Set<string>();
+    data.chatSessions.forEach((s: any) => s.keyInsights.forEach((i: string) => allInsights.add(i)));
+    data.textAnalyses.forEach((a: any) => a.keyInsights.forEach((i: string) => allInsights.add(i)));
+
+    if (allInsights.size > 0) {
+      let insightNum = 1;
+      allInsights.forEach(insight => {
+        lines.push(`${insightNum}. ${insight}`);
+        insightNum++;
+      });
+    } else {
+      lines.push('No insights recorded yet.');
+    }
+
+    return lines.join('\n');
   }
 }
